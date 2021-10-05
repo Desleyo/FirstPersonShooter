@@ -10,8 +10,11 @@ public class PlayerMovement : MonoBehaviour
 
     //Mouse input variables
     float xRotation;
-    float mouseX, mouseY;
+    float yRotation;
     [Space, SerializeField] float sensitivity;
+
+    //Look variables
+    [Space, SerializeField] float camOffset = .65f;
 
     //WASD input variables
     float horizontal, vertical;
@@ -54,13 +57,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Look()
     {
-        mouseX = Input.GetAxisRaw("Mouse X") * sensitivity;
-        mouseY = Input.GetAxisRaw("Mouse Y") * sensitivity;
+        float mouseX = Input.GetAxisRaw("Mouse X") * sensitivity;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * sensitivity;
 
         xRotation -= mouseY;
+        yRotation += mouseX;
         xRotation = Mathf.Clamp(xRotation, -60f, 60f);
 
-        playerCam.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        playerCam.transform.position = new Vector3(transform.position.x, transform.position.y + camOffset, transform.position.z);
+        playerCam.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
         transform.Rotate(Vector3.up * mouseX);
     }
 
