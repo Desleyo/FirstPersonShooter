@@ -16,10 +16,24 @@ public class PlayerMovement : MonoBehaviour
     //WASD input variables
     float horizontal, vertical;
     [Space, SerializeField] float moveSpeed;
+    [SerializeField] float crouchMoveSpeed;
 
     //Jump variables
     bool canJump = true;
-    [Space, SerializeField] float jumpForce;
+    [SerializeField] float jumpForce;
+
+    //Crouch & Stand up variables
+    [HideInInspector]
+    public bool isCrouching = false;
+    bool canCrouch = true;
+
+    [Space, SerializeField] float crouchSpeed;
+    [SerializeField] float crouchCooldown = .5f;
+
+    [Space, SerializeField] float crouchHeight = .5f;
+    [SerializeField] float crouchPosY = .55f;
+    [SerializeField] float standingHeight = 1;
+    [SerializeField] float standingPosY = 1.01f;
 
     private void Start()
     {
@@ -29,9 +43,13 @@ public class PlayerMovement : MonoBehaviour
     public void Update()
     {
         Look();
-        Move();
         Jump();
         Crouch();
+    }
+
+    public void FixedUpdate()
+    {
+        Move();
     }
 
     void Look()
@@ -46,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
-    private void Move()
+    void Move()
     {
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
@@ -54,27 +72,66 @@ public class PlayerMovement : MonoBehaviour
         Vector3 dir = new Vector3(horizontal, 0, vertical);
         dir = Vector3.ClampMagnitude(dir, 1f);
 
-        transform.Translate(dir * moveSpeed * Time.deltaTime, Space.Self);
+        float speed = isCrouching ? crouchMoveSpeed : moveSpeed;
+        rb.MovePosition(transform.position + transform.TransformDirection(dir) * speed * Time.deltaTime);
     }
 
     void Jump()
     {
         if (Input.GetButtonDown("Jump") && canJump)
         {
-            var jumpVelocity = Mathf.Sqrt(2 * -Physics.gravity.y * jumpForce);
-
-            rb.AddRelativeForce(0, jumpVelocity, 0, ForceMode.Impulse);
-
             canJump = false;
+
+            var jumpVelocity = Mathf.Sqrt(2 * -Physics.gravity.y * jumpForce);
+            rb.AddRelativeForce(0, jumpVelocity, 0, ForceMode.Impulse);
         }
     }
 
     void Crouch()
     {
-        if (Input.GetButtonDown("Crouch"))
+        if (Input.GetButton("Crouch"))
+            isCrouching = true;
+        else if (Input.GetButtonUp("Crouch"))
+            isCrouching = false;
+
+        //Make player crouch
+        if(canCrouch && isCrouching && transform.localScale.y > crouchHeight)
         {
-        
+            transform.localScale = new Vector3(1, transform.localScale.y - 1 * crouchSpeed, 1);
+
+            //Make sure the player will be exactly at crouchHeight when nearing it
+            if (transform.localScale.y <= crouchHeight + .05f)
+                transform.localScale = new Vector3(1, crouchHeight, 1);
+
+            //If the player isn't airborne put player on the ground
+            if (canJump && transform.position.y <= 1.1f)
+                transform.position = new Vector3(transform.position.x, crouchPosY, transform.position.z);
         }
+        //Make player stand up
+        else if(!isCrouching && transform.localScale.y < standingHeight)
+        {
+            transform.localScale = new Vector3(1, transform.localScale.y + 1 * crouchSpeed, 1);
+
+            //Make sure the player will be exactly at standinHeight when nearing it
+            if (transform.localScale.y >= standingHeight - .05f)
+            {
+                transform.localScale = new Vector3(1, standingHeight, 1);
+
+                canCrouch = false;
+                StartCoroutine(WaitForCooldown());
+            }
+
+            //If player isn't airborne put player on ground
+            if (canJump)
+                transform.position = new Vector3(transform.position.x, standingPosY, transform.position.z);
+        }
+    }
+
+    IEnumerator WaitForCooldown()
+    {
+        yield return new WaitForSeconds(crouchCooldown);
+
+        canCrouch = true;
     }
 
     private void OnCollisionEnter(Collision collision)
