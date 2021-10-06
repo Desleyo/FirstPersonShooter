@@ -1273,3 +1273,89 @@ System memory in use after: 77.0 MB.
 Unloading 19 unused Assets to reduce memory usage. Loaded Objects now: 1744.
 Total: 2.611700 ms (FindLiveObjects: 0.188600 ms CreateObjectMapping: 0.054300 ms MarkObjects: 1.935300 ms  DeleteObjects: 0.431700 ms)
 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.002132 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.25 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.475 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.24 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1159 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 77.7 MB.
+System memory in use after: 77.1 MB.
+
+Unloading 18 unused Assets to reduce memory usage. Loaded Objects now: 1747.
+Total: 2.350000 ms (FindLiveObjects: 0.171800 ms CreateObjectMapping: 0.048600 ms MarkObjects: 1.727300 ms  DeleteObjects: 0.401200 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 181.757374 seconds.
+  path: Assets/Toon Muzzleflash Pack/Example Prefabs/Toon Muzzleflash 20.prefab
+  artifactKey: Guid(7b4c09739930d43458b94e59aa06933a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Toon Muzzleflash Pack/Example Prefabs/Toon Muzzleflash 20.prefab using Guid(7b4c09739930d43458b94e59aa06933a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd254b87d4b69ba4332fb64b3f9507000') in 0.031080 seconds
+  Import took 0.034237 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001672 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.26 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.056 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.23 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1159 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 77.6 MB.
+System memory in use after: 77.1 MB.
+
+Unloading 18 unused Assets to reduce memory usage. Loaded Objects now: 1750.
+Total: 2.339500 ms (FindLiveObjects: 0.184100 ms CreateObjectMapping: 0.042500 ms MarkObjects: 1.693100 ms  DeleteObjects: 0.418700 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 117.408485 seconds.
+  path: Assets/Prefabs/Toon Muzzleflash 20.prefab
+  artifactKey: Guid(a1a2e7349e9555e40b9b772793b2586c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Toon Muzzleflash 20.prefab using Guid(a1a2e7349e9555e40b9b772793b2586c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '33e7fc3d8a037e2007e17507a1a2c465') in 0.087384 seconds
+  Import took 0.089911 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001691 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.23 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.162 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.29 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1159 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 77.7 MB.
+System memory in use after: 77.1 MB.
+
+Unloading 18 unused Assets to reduce memory usage. Loaded Objects now: 1754.
+Total: 2.576500 ms (FindLiveObjects: 0.183100 ms CreateObjectMapping: 0.052700 ms MarkObjects: 1.952600 ms  DeleteObjects: 0.386400 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
