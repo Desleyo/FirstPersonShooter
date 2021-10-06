@@ -8,6 +8,8 @@ public class Shoot : MonoBehaviour
     //References
     [SerializeField] Camera cam;
     [SerializeField] Animator animator;
+    [SerializeField] Animator reload;
+    [SerializeField] GameObject armMesh;
 
     [Space, SerializeField] GameObject flash;
     [SerializeField] GameObject bulletHit;
@@ -89,7 +91,10 @@ public class Shoot : MonoBehaviour
         //Check if the player wants to reload, or if the gun is empty
         if (Input.GetButtonDown("Reload") && !reloading && nextTimeToShoot < Time.time && currentBulletCount != maxBulletCount || currentBulletCount == 0 && !reloading && nextTimeToShoot < Time.time)
         {
-            animator.SetTrigger("Reload");
+            reload.gameObject.SetActive(true);
+            armMesh.SetActive(false);
+
+            reload.SetTrigger("Reload");
             StartCoroutine(Reload(reloadTime));
             reloading = true;
         }
@@ -143,6 +148,9 @@ public class Shoot : MonoBehaviour
         animator.ResetTrigger("Reload");
 
         ResetAmmo();
+
+        armMesh.SetActive(true);
+        reload.gameObject.SetActive(false);
 
         StopCoroutine(nameof(Reload));
     }
