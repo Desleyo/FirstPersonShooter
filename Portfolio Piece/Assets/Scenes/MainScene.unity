@@ -1906,6 +1906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCam: {fileID: 963194225}
   rb: {fileID: 1102741411}
+  shoot: {fileID: 1441447277}
   sensitivity: 1
   camOffset: 0.65
   moveSpeed: 5
@@ -1918,14 +1919,7 @@ MonoBehaviour:
   crouchPosY: 0.55
   standingHeight: 1
   standingPosY: 1.01
-  recoilIncreaseValue: 1
-  recoilDecreaseValue: 1
-  recoilClampX: 10
-  recoilClampY: 10
-  recoilMaxX: 0
-  recoilMaxY: 0
-  recoilValueX: 0
-  recoilValueY: 0
+  recoilSpeed: 3
 --- !u!54 &1102741411
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2334,6 +2328,7 @@ MonoBehaviour:
   currentBulletCount: 30
   maxBulletCount: 30
   reloadTime: 2
+  reloading: 0
   bulletCountText: {fileID: 1776732800}
   sprayPattern:
   - {x: 0, y: 0, z: 0}
@@ -2369,8 +2364,9 @@ MonoBehaviour:
   crouchSpray: 1.5
   sprayDivider: 100
   spreadEnabled: 1
-  recoilValueY: 10
-  recoilResetAddTime: 0.5
+  sprayPatternIndex: 0
+  recoilValueY: 5
+  recoilResetAddTime: 0.3
 --- !u!1 &1472924846
 GameObject:
   m_ObjectHideFlags: 0

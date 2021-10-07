@@ -27,7 +27,7 @@ public class Shoot : MonoBehaviour
     [Space, SerializeField] int currentBulletCount;
     [SerializeField] int maxBulletCount;
     [SerializeField] float reloadTime;
-    bool reloading;
+    public bool reloading;
 
     [SerializeField] TextMeshProUGUI bulletCountText;
     
@@ -36,7 +36,7 @@ public class Shoot : MonoBehaviour
     [SerializeField] float crouchSpray;
     [SerializeField] float sprayDivider;
     [SerializeField] bool spreadEnabled;
-    int sprayPatternIndex;
+    public int sprayPatternIndex;
     int revalueIndex;
 
     //Recoil variables
@@ -72,7 +72,7 @@ public class Shoot : MonoBehaviour
 
                 ShootRaycast();
                 InstantiateFlash();
-                playerControls.AddRecoil(0, recoilValueY);
+                playerControls.AddRecoil(sprayPattern[sprayPatternIndex - 1].x * sprayDivider, recoilValueY);
 
                 recoilResetTime = recoilResetAddTime;
                 nextTimeToShoot = Time.time + 1f / fireRate;
@@ -141,8 +141,8 @@ public class Shoot : MonoBehaviour
         //Add spread if enabled && perserve first bullet accuracy
         if(spreadEnabled && sprayPatternIndex != 1)
         {
-            float randomX = Random.Range(-1f, 1f);
-            float randomY = Random.Range(0f, 1f);
+            float randomX = Random.Range(-.25f, .25f);
+            float randomY = Random.Range(0f, .25f);
             dir = new Vector3(dir.x + randomX / sprayDivider, dir.y + randomY / sprayDivider, dir.z);
         }
 

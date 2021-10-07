@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     //References
     [SerializeField] GameObject playerCam;
     [SerializeField] Rigidbody rb;
+    [SerializeField] Shoot shoot;
 
     //Mouse input variables
     float xRotation;
@@ -39,10 +40,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float standingPosY = 1.01f;
 
     //Recoil variables
-    [Space, SerializeField] float recoilClampX;
-    public float recoilMaxX, recoilMaxY;
-    public float recoilValueX, recoilValueY;
-    bool increaseRecoil;
+    [Space, SerializeField] float recoilSpeed;
+    float recoilMaxX, recoilMaxY;
+    float recoilValueX, recoilValueY;
 
     private void Start()
     {
@@ -56,24 +56,27 @@ public class PlayerController : MonoBehaviour
         Crouch();
 
         //Increase & decrease recoil of camera
-        if (increaseRecoil)
+        if (Input.GetButton("Fire1") && !shoot.reloading) 
         {
-            recoilValueX = Mathf.Lerp(recoilValueX, recoilMaxX, 1 * Time.deltaTime);
-            recoilValueY = Mathf.Lerp(recoilValueY, recoilMaxY, 1 * Time.deltaTime);
+            recoilValueX = Mathf.Lerp(recoilValueX, recoilMaxX, 1 * Time.deltaTime * recoilSpeed);
+            recoilValueY = Mathf.Lerp(recoilValueY, recoilMaxY, 1 * Time.deltaTime * recoilSpeed);
         }
         else
         {
-            recoilValueX = Mathf.Lerp(recoilValueX, 0, 1 * Time.deltaTime);
-            recoilValueY = Mathf.Lerp(recoilValueY, 0, 1 * Time.deltaTime);
+            recoilValueX = Mathf.Lerp(recoilValueX, 0, 1 * Time.deltaTime * recoilSpeed);
+            recoilValueY = Mathf.Lerp(recoilValueY, 0, 1 * Time.deltaTime * recoilSpeed);
         }
 
-        if (recoilValueY + .1 > recoilMaxY)
-            increaseRecoil = false;
-
-        if (recoilValueY < .1)
+        if (recoilValueX < .1 && recoilValueX > -.1 && !Input.GetButton("Fire1"))
         {
             recoilMaxX = 0;
             recoilMaxY = 0;
+        }
+
+        if(recoilValueY - .1 < 0)
+        {
+            recoilValueX = 0;
+            recoilValueY = 0;
         }
     }
 
@@ -99,11 +102,7 @@ public class PlayerController : MonoBehaviour
     public void AddRecoil(float valueX, float valueY)
     {
         recoilMaxX += valueX;
-        Mathf.Clamp(recoilMaxX, 0, recoilClampX);
-
         recoilMaxY = valueY;
-
-        increaseRecoil = true;
     }
 
     void Move()
