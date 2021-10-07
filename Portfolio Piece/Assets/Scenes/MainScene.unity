@@ -223,6 +223,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 57474067}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &77452845
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 77452846}
+  m_Layer: 0
+  m_Name: Decals
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &77452846
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77452845}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &159481001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2288,45 +2318,46 @@ MonoBehaviour:
   flash: {fileID: 769231850312162702, guid: a1a2e7349e9555e40b9b772793b2586c, type: 3}
   bulletHit: {fileID: 8285733933855847673, guid: bfd6dd9d85fa3e74dafb91baec28f161, type: 3}
   muzzle: {fileID: 1530499318}
+  bulletHitParent: {fileID: 77452846}
   bodyshotDamage: 31
   headshotDamage: 123
   wallbangDamageReducer: 13
-  fireRate: 5
+  fireRate: 7.5
   currentBulletCount: 30
   maxBulletCount: 30
   reloadTime: 2
   bulletCountText: {fileID: 1776732800}
   sprayPattern:
   - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 1, z: 0}
+  - {x: 0.2, y: 2, z: 0}
+  - {x: 0.35, y: 3, z: 0}
+  - {x: 0.6, y: 4, z: 0}
+  - {x: 0.7, y: 5, z: 0}
+  - {x: 0.85, y: 6, z: 0}
+  - {x: 0.55, y: 7, z: 0}
+  - {x: 0.3, y: 8, z: 0}
+  - {x: 0.1, y: 9, z: 0}
+  - {x: 0, y: 10, z: 0}
+  - {x: -0.2, y: 10.5, z: 0}
+  - {x: -0.4, y: 11, z: 0}
+  - {x: -0.75, y: 11.5, z: 0}
+  - {x: -0.7, y: 12, z: 0}
+  - {x: -0.4, y: 12.5, z: 0}
+  - {x: 0, y: 13, z: 0}
+  - {x: 0.25, y: 13.5, z: 0}
+  - {x: 0.6, y: 14, z: 0}
+  - {x: 0.95, y: 14.5, z: 0}
+  - {x: 1.4, y: 15, z: 0}
+  - {x: 1.6, y: 15.5, z: 0}
+  - {x: 1.85, y: 16, z: 0}
+  - {x: 1.4, y: 16.25, z: 0}
+  - {x: 1, y: 16.5, z: 0}
+  - {x: 0.5, y: 16.75, z: 0}
+  - {x: 0, y: 17, z: 0}
+  - {x: -0.6, y: 17.25, z: 0}
+  - {x: -1.1, y: 17.5, z: 0}
+  - {x: -1.5, y: 17.75, z: 0}
   crouchSpray: 2
   sprayDivider: 100
   recoilResetAddTime: 0.5

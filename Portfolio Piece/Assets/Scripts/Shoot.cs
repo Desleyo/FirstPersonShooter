@@ -15,6 +15,7 @@ public class Shoot : MonoBehaviour
     [Space, SerializeField] GameObject flash;
     [SerializeField] GameObject bulletHit;
     [SerializeField] Transform muzzle;
+    [SerializeField] Transform bulletHitParent;
 
     //Damage values & fire rate
     [Space, SerializeField] int bodyshotDamage;
@@ -137,7 +138,7 @@ public class Shoot : MonoBehaviour
         Vector3 ray = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.5f));
         if(Physics.Raycast(ray, dir, out RaycastHit hit))
         {
-            var hitEffect = Instantiate(bulletHit, hit.point, Quaternion.identity);
+            var hitEffect = Instantiate(bulletHit, hit.point, Quaternion.identity, bulletHitParent);
             hitEffect.transform.up = hit.normal;
             StartCoroutine(DestroyEffect(10f, hitEffect));   
         }
