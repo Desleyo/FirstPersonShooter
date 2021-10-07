@@ -6,7 +6,7 @@ using TMPro;
 public class Shoot : MonoBehaviour
 {
     //References
-    [SerializeField] PlayerMovement playerMove;
+    [SerializeField] PlayerController playerControls;
     [SerializeField] Camera cam;
     [SerializeField] Animator animator;
     [SerializeField] Animator reload;
@@ -35,11 +35,13 @@ public class Shoot : MonoBehaviour
     [Space, SerializeField] Vector3[] sprayPattern;
     [SerializeField] float crouchSpray;
     [SerializeField] float sprayDivider;
+    [SerializeField] bool spreadEnabled;
     int sprayPatternIndex;
     int revalueIndex;
 
     //Recoil variables
-    [Space, SerializeField] float recoilResetAddTime;
+    [Space, SerializeField] float recoilValueY;
+    [SerializeField] float recoilResetAddTime;
     float recoilResetTime;
 
     float nextTimeToShoot;
@@ -70,6 +72,7 @@ public class Shoot : MonoBehaviour
 
                 ShootRaycast();
                 InstantiateFlash();
+                playerControls.AddRecoil(0, recoilValueY);
 
                 recoilResetTime = recoilResetAddTime;
                 nextTimeToShoot = Time.time + 1f / fireRate;
@@ -132,8 +135,16 @@ public class Shoot : MonoBehaviour
             dir = cam.transform.forward + new Vector3(-sprayPattern[sprayPatternIndex -1].x, sprayPattern[sprayPatternIndex -1].y, 0);
 
         //Lower the spray if crouching
-        if(playerMove.isCrouching)
+        if(playerControls.isCrouching)
             dir = new Vector3(dir.x / crouchSpray, dir.y / crouchSpray, dir.z);
+
+        //Add spread if enabled && perserve first bullet accuracy
+        if(spreadEnabled && sprayPatternIndex != 1)
+        {
+            float randomX = Random.Range(-1f, 1f);
+            float randomY = Random.Range(0f, 1f);
+            dir = new Vector3(dir.x + randomX / sprayDivider, dir.y + randomY / sprayDivider, dir.z);
+        }
 
         Vector3 ray = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.5f));
         if(Physics.Raycast(ray, dir, out RaycastHit hit))

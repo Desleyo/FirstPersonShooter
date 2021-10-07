@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     //References
     [SerializeField] GameObject playerCam;
@@ -38,6 +38,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float standingHeight = 1;
     [SerializeField] float standingPosY = 1.01f;
 
+    //Recoil variables
+    [Space, SerializeField] float recoilClampX;
+    public float recoilMaxX, recoilMaxY;
+    public float recoilValueX, recoilValueY;
+    bool increaseRecoil;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -48,6 +54,27 @@ public class PlayerMovement : MonoBehaviour
         Look();
         Jump();
         Crouch();
+
+        //Increase & decrease recoil of camera
+        if (increaseRecoil)
+        {
+            recoilValueX = Mathf.Lerp(recoilValueX, recoilMaxX, 1 * Time.deltaTime);
+            recoilValueY = Mathf.Lerp(recoilValueY, recoilMaxY, 1 * Time.deltaTime);
+        }
+        else
+        {
+            recoilValueX = Mathf.Lerp(recoilValueX, 0, 1 * Time.deltaTime);
+            recoilValueY = Mathf.Lerp(recoilValueY, 0, 1 * Time.deltaTime);
+        }
+
+        if (recoilValueY + .1 > recoilMaxY)
+            increaseRecoil = false;
+
+        if (recoilValueY < .1)
+        {
+            recoilMaxX = 0;
+            recoilMaxY = 0;
+        }
     }
 
     public void FixedUpdate()
@@ -65,8 +92,18 @@ public class PlayerMovement : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -60f, 60f);
 
         playerCam.transform.position = new Vector3(transform.position.x, transform.position.y + camOffset, transform.position.z);
-        playerCam.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
+        playerCam.transform.localRotation = Quaternion.Euler(xRotation - recoilValueY, yRotation + recoilValueX, 0);
         transform.Rotate(Vector3.up * mouseX);
+    }
+
+    public void AddRecoil(float valueX, float valueY)
+    {
+        recoilMaxX += valueX;
+        Mathf.Clamp(recoilMaxX, 0, recoilClampX);
+
+        recoilMaxY = valueY;
+
+        increaseRecoil = true;
     }
 
     void Move()

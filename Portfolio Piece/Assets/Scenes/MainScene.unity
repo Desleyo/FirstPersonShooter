@@ -1918,6 +1918,14 @@ MonoBehaviour:
   crouchPosY: 0.55
   standingHeight: 1
   standingPosY: 1.01
+  recoilIncreaseValue: 1
+  recoilDecreaseValue: 1
+  recoilClampX: 10
+  recoilClampY: 10
+  recoilMaxX: 0
+  recoilMaxY: 0
+  recoilValueX: 0
+  recoilValueY: 0
 --- !u!54 &1102741411
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2310,7 +2318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35cfb8802bf1780479cd2bc03fb44cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMove: {fileID: 1102741410}
+  playerControls: {fileID: 1102741410}
   cam: {fileID: 963194227}
   animator: {fileID: 1441447276}
   reload: {fileID: 1640966691}
@@ -2338,7 +2346,6 @@ MonoBehaviour:
   - {x: 0.55, y: 7, z: 0}
   - {x: 0.3, y: 8, z: 0}
   - {x: 0.1, y: 9, z: 0}
-  - {x: 0, y: 10, z: 0}
   - {x: -0.2, y: 10.5, z: 0}
   - {x: -0.4, y: 11, z: 0}
   - {x: -0.75, y: 11.5, z: 0}
@@ -2346,20 +2353,23 @@ MonoBehaviour:
   - {x: -0.4, y: 12.5, z: 0}
   - {x: 0, y: 13, z: 0}
   - {x: 0.25, y: 13.5, z: 0}
-  - {x: 0.6, y: 14, z: 0}
-  - {x: 0.95, y: 14.5, z: 0}
-  - {x: 1.4, y: 15, z: 0}
-  - {x: 1.6, y: 15.5, z: 0}
+  - {x: 0.5, y: 14, z: 0}
+  - {x: 1, y: 14.5, z: 0}
+  - {x: 1.5, y: 15, z: 0}
+  - {x: 2, y: 15.5, z: 0}
   - {x: 1.85, y: 16, z: 0}
-  - {x: 1.4, y: 16.25, z: 0}
-  - {x: 1, y: 16.5, z: 0}
-  - {x: 0.5, y: 16.75, z: 0}
-  - {x: 0, y: 17, z: 0}
-  - {x: -0.6, y: 17.25, z: 0}
-  - {x: -1.1, y: 17.5, z: 0}
-  - {x: -1.5, y: 17.75, z: 0}
-  crouchSpray: 2
+  - {x: 1, y: 16, z: 0}
+  - {x: 0.5, y: 16, z: 0}
+  - {x: -0.5, y: 16, z: 0}
+  - {x: -1, y: 16, z: 0}
+  - {x: -1.5, y: 16, z: 0}
+  - {x: -2, y: 16, z: 0}
+  - {x: -2.5, y: 16, z: 0}
+  - {x: -3, y: 16, z: 0}
+  crouchSpray: 1.5
   sprayDivider: 100
+  spreadEnabled: 1
+  recoilValueY: 10
   recoilResetAddTime: 0.5
 --- !u!1 &1472924846
 GameObject:
