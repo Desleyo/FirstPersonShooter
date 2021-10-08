@@ -21,10 +21,11 @@ public class Shoot : MonoBehaviour
     [Space, SerializeField] int bodyshotDamage;
     [SerializeField] int headshotDamage;
     [SerializeField] int wallbangDamageReducer;
-    [SerializeField] float fireRate;
+    [SerializeField] float autoFireRate;
+    [SerializeField] float semiFireRate;
 
     //Bullet & reload variables
-    [Space, SerializeField] int currentBulletCount;
+    [Space, SerializeField] public int currentBulletCount;
     [SerializeField] int maxBulletCount;
     [SerializeField] float reloadTime;
     public bool reloading;
@@ -45,9 +46,9 @@ public class Shoot : MonoBehaviour
     float recoilResetTime;
 
     float nextTimeToShoot;
-    public bool isShooting;
-    public bool nextShot;
-    bool fullAuto = true;
+    bool isShooting;
+    bool nextShot;
+    public bool fullAuto = true;
 
     private void Start()
     {
@@ -75,6 +76,8 @@ public class Shoot : MonoBehaviour
                 playerControls.AddRecoil(sprayPattern[sprayPatternIndex - 1].x * sprayDivider, recoilValueY);
 
                 recoilResetTime = recoilResetAddTime;
+
+                float fireRate = fullAuto ? autoFireRate : semiFireRate;
                 nextTimeToShoot = Time.time + 1f / fireRate;
                 nextShot = false;
             }

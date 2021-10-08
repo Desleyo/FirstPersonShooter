@@ -1919,11 +1919,9 @@ MonoBehaviour:
   crouchPosY: 0.55
   standingHeight: 1
   standingPosY: 1.01
-  recoilSpeed: 3
-  recoilMaxX: 0
-  recoilMaxY: 0
-  recoilValueX: 0
-  recoilValueY: 0
+  recoilSpeed: 2
+  autoClampY: 10
+  semiClampY: 5
 --- !u!54 &1102741411
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2328,7 +2326,8 @@ MonoBehaviour:
   bodyshotDamage: 31
   headshotDamage: 123
   wallbangDamageReducer: 13
-  fireRate: 7.5
+  autoFireRate: 7.5
+  semiFireRate: 2
   currentBulletCount: 30
   maxBulletCount: 30
   reloadTime: 2
@@ -2370,9 +2369,8 @@ MonoBehaviour:
   spreadEnabled: 1
   sprayPatternIndex: 0
   recoilValueY: 5
-  recoilResetAddTime: 0.2
-  isShooting: 0
-  nextShot: 0
+  recoilResetAddTime: 0.175
+  fullAuto: 1
 --- !u!1 &1472924846
 GameObject:
   m_ObjectHideFlags: 0

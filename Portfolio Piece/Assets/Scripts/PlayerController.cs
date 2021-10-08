@@ -41,8 +41,11 @@ public class PlayerController : MonoBehaviour
 
     //Recoil variables
     [Space, SerializeField] float recoilSpeed;
-    public float recoilMaxX, recoilMaxY;
-    public float recoilValueX, recoilValueY;
+    [SerializeField] float autoClampY = 10;
+    [SerializeField] float semiClampY = 5;
+    float recoilMaxX, recoilMaxY;
+    float recoilValueX, recoilValueY;
+    bool canIncreaseRecoil;
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -80,12 +83,15 @@ public class PlayerController : MonoBehaviour
         recoilMaxX += valueX;
         recoilMaxY += valueY;
 
-        recoilMaxY = Mathf.Clamp(recoilMaxY, 0, 10);
+        float clamp = shoot.fullAuto ? autoClampY : semiClampY;
+        recoilMaxY = Mathf.Clamp(recoilMaxY, 0, clamp);
+
+        canIncreaseRecoil = true;
     }
 
     void IncreaseRecoil()
     {
-        if (Input.GetButton("Fire1") && !shoot.reloading)
+        if (canIncreaseRecoil)
         {
             recoilValueX = Mathf.Lerp(recoilValueX, recoilMaxX, 1 * Time.deltaTime * recoilSpeed);
             recoilValueY = Mathf.Lerp(recoilValueY, recoilMaxY, 1 * Time.deltaTime * recoilSpeed);
@@ -96,17 +102,32 @@ public class PlayerController : MonoBehaviour
             recoilValueY = Mathf.Lerp(recoilValueY, 0, 1 * Time.deltaTime * recoilSpeed);
         }
 
-        if (recoilValueX < .1 && recoilValueX > -.1 && !Input.GetButton("Fire1"))
+        if (recoilValueX < .1 && recoilValueX > -.1 && recoilValueY < .1 && !canIncreaseRecoil)
         {
             recoilMaxX = 0;
             recoilMaxY = 0;
         }
 
-        if (recoilValueY - .1 < 0)
+        if (recoilValueY - .1 < 0 && !canIncreaseRecoil)
         {
             recoilValueX = 0;
             recoilValueY = 0;
         }
+
+        if (canIncreaseRecoil) 
+        {
+            if (!shoot.fullAuto && !Input.GetButtonDown("Fire1"))
+                StartCoroutine(WaitToDecrease(.25f));
+            else if (!Input.GetButton("Fire1") || shoot.currentBulletCount == 0)
+                canIncreaseRecoil = false;
+        }
+    }
+
+    IEnumerator WaitToDecrease(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        canIncreaseRecoil = false;
     }
 
     void Move()
