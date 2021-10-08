@@ -45,8 +45,8 @@ public class Shoot : MonoBehaviour
     float recoilResetTime;
 
     float nextTimeToShoot;
-    bool isShooting;
-    bool nextShot;
+    public bool isShooting;
+    public bool nextShot;
     bool fullAuto = true;
 
     private void Start()
@@ -63,7 +63,7 @@ public class Shoot : MonoBehaviour
         CheckFireModeInput();
         CheckReloadInput();
 
-        if (currentBulletCount > 0 && !reloading && Time.time >= nextTimeToShoot)
+        if (currentBulletCount > 0 && !reloading && nextTimeToShoot < Time.time)
         {
             if (isShooting || nextShot)
             {
@@ -95,10 +95,7 @@ public class Shoot : MonoBehaviour
             fullAuto = !fullAuto;  
 
         //check input of mouse
-            if (!fullAuto)
-                isShooting = Input.GetButtonDown("Fire1") && nextTimeToShoot < Time.time;
-            else
-                isShooting = Input.GetButton("Fire1") && nextTimeToShoot < Time.time;
+        isShooting = fullAuto ? Input.GetButton("Fire1") : Input.GetButtonDown("Fire1");
 
         //check for input in between chambering rounds
         if (nextTimeToShoot > Time.time && Input.GetButtonDown("Fire1") && !isShooting)

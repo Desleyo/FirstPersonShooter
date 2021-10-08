@@ -41,9 +41,8 @@ public class PlayerController : MonoBehaviour
 
     //Recoil variables
     [Space, SerializeField] float recoilSpeed;
-    float recoilMaxX, recoilMaxY;
-    float recoilValueX, recoilValueY;
-
+    public float recoilMaxX, recoilMaxY;
+    public float recoilValueX, recoilValueY;
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -52,32 +51,9 @@ public class PlayerController : MonoBehaviour
     public void Update()
     {
         Look();
+        IncreaseRecoil();
         Jump();
         Crouch();
-
-        //Increase & decrease recoil of camera
-        if (Input.GetButton("Fire1") && !shoot.reloading) 
-        {
-            recoilValueX = Mathf.Lerp(recoilValueX, recoilMaxX, 1 * Time.deltaTime * recoilSpeed);
-            recoilValueY = Mathf.Lerp(recoilValueY, recoilMaxY, 1 * Time.deltaTime * recoilSpeed);
-        }
-        else
-        {
-            recoilValueX = Mathf.Lerp(recoilValueX, 0, 1 * Time.deltaTime * recoilSpeed);
-            recoilValueY = Mathf.Lerp(recoilValueY, 0, 1 * Time.deltaTime * recoilSpeed);
-        }
-
-        if (recoilValueX < .1 && recoilValueX > -.1 && !Input.GetButton("Fire1"))
-        {
-            recoilMaxX = 0;
-            recoilMaxY = 0;
-        }
-
-        if(recoilValueY - .1 < 0)
-        {
-            recoilValueX = 0;
-            recoilValueY = 0;
-        }
     }
 
     public void FixedUpdate()
@@ -102,7 +78,35 @@ public class PlayerController : MonoBehaviour
     public void AddRecoil(float valueX, float valueY)
     {
         recoilMaxX += valueX;
-        recoilMaxY = valueY;
+        recoilMaxY += valueY;
+
+        recoilMaxY = Mathf.Clamp(recoilMaxY, 0, 10);
+    }
+
+    void IncreaseRecoil()
+    {
+        if (Input.GetButton("Fire1") && !shoot.reloading)
+        {
+            recoilValueX = Mathf.Lerp(recoilValueX, recoilMaxX, 1 * Time.deltaTime * recoilSpeed);
+            recoilValueY = Mathf.Lerp(recoilValueY, recoilMaxY, 1 * Time.deltaTime * recoilSpeed);
+        }
+        else
+        {
+            recoilValueX = Mathf.Lerp(recoilValueX, 0, 1 * Time.deltaTime * recoilSpeed);
+            recoilValueY = Mathf.Lerp(recoilValueY, 0, 1 * Time.deltaTime * recoilSpeed);
+        }
+
+        if (recoilValueX < .1 && recoilValueX > -.1 && !Input.GetButton("Fire1"))
+        {
+            recoilMaxX = 0;
+            recoilMaxY = 0;
+        }
+
+        if (recoilValueY - .1 < 0)
+        {
+            recoilValueX = 0;
+            recoilValueY = 0;
+        }
     }
 
     void Move()
