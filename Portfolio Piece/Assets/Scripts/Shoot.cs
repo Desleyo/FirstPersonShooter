@@ -47,7 +47,13 @@ public class Shoot : MonoBehaviour
     [SerializeField] float recoilResetAddTime;
     float recoilResetTime;
 
-    public bool fullAuto = true;
+    [Header("FireMode variables")]
+    [SerializeField] TextMeshProUGUI fireModeText;
+    [SerializeField] float fireModeCooldown;
+    bool canSwitchFireMode = true;
+
+    //Some private variables
+    [HideInInspector] public bool fullAuto = true;
     bool isShooting;
     bool nextShot;
     float nextTimeToShoot;
@@ -96,8 +102,13 @@ public class Shoot : MonoBehaviour
     void CheckFireModeInput()
     {
         //switch between fire modes
-        if (Input.GetButtonDown("FireMode"))
+        if (Input.GetButton("FireMode") && canSwitchFireMode)
+        {
             fullAuto = !fullAuto;
+            fireModeText.text = fullAuto ? "Auto" : "Semi";
+            canSwitchFireMode = false;
+            StartCoroutine(FireModeCooldown(fireModeCooldown));
+        }
 
         //check input of mouse
         isShooting = fullAuto ? Input.GetButton("Fire1") : Input.GetButtonDown("Fire1");
@@ -188,6 +199,13 @@ public class Shoot : MonoBehaviour
         reload.gameObject.SetActive(false);
 
         StopCoroutine(nameof(Reload));
+    }
+
+    IEnumerator FireModeCooldown(float cooldown)
+    {
+        yield return new WaitForSeconds(cooldown);
+
+        canSwitchFireMode = true;
     }
 
     public void ResetAmmo()
