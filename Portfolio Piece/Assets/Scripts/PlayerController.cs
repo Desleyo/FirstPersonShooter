@@ -4,48 +4,44 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    //References
+    [Header("References")]
     [SerializeField] GameObject playerCam;
     [SerializeField] Rigidbody rb;
     [SerializeField] Shoot shoot;
 
-    //Mouse input variables
+    [Space, SerializeField] float sensitivity;
     float xRotation;
     float yRotation;
-    [Space, SerializeField] float sensitivity;
 
     //Look variables
     [Space, SerializeField] float camOffset = .65f;
 
-    //WASD input variables
-    float horizontal, vertical;
-    [Space, SerializeField] float moveSpeed;
+    [Header("Move & Crouch variables")]
+    [SerializeField] float moveSpeed;
     [SerializeField] float crouchMoveSpeed;
+    [SerializeField] float crouchSpeed;
+    [SerializeField] float crouchCooldown = .5f;
+    [HideInInspector] public bool isCrouching = false;
+    bool canCrouch = true;
+    float horizontal, vertical;
 
     //Jump variables
+    [Space, SerializeField] float jumpForce;
     bool canJump = true;
-    [SerializeField] float jumpForce;
 
-    //Crouch & Stand up variables
-    [HideInInspector]
-    public bool isCrouching = false;
-    bool canCrouch = true;
-
-    [Space, SerializeField] float crouchSpeed;
-    [SerializeField] float crouchCooldown = .5f;
-
-    [Space, SerializeField] float crouchHeight = .5f;
+    [Header("Standing & Crouch values")]
+    [SerializeField] float crouchHeight = .5f;
     [SerializeField] float crouchPosY = .55f;
     [SerializeField] float standingHeight = 1;
     [SerializeField] float standingPosY = 1.01f;
 
-    //Recoil variables
-    [Space, SerializeField] float recoilSpeed;
-    [SerializeField] float autoClampY = 10;
-    [SerializeField] float semiClampY = 5;
+    [Header("Recoil variables")]
+    [SerializeField] float recoilSpeed;
+    [SerializeField] float recoilClampY = 10;
     float recoilMaxX, recoilMaxY;
     float recoilValueX, recoilValueY;
     bool canIncreaseRecoil;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -83,10 +79,11 @@ public class PlayerController : MonoBehaviour
         recoilMaxX += valueX;
         recoilMaxY += valueY;
 
-        float clamp = shoot.fullAuto ? autoClampY : semiClampY;
-        recoilMaxY = Mathf.Clamp(recoilMaxY, 0, clamp);
+        recoilMaxY = Mathf.Clamp(recoilMaxY, 0, recoilClampY);
 
         canIncreaseRecoil = true;
+
+        StartCoroutine(WaitToDecrease(.1f));
     }
 
     void IncreaseRecoil()
@@ -114,12 +111,10 @@ public class PlayerController : MonoBehaviour
             recoilValueY = 0;
         }
 
-        if (canIncreaseRecoil) 
+        if (canIncreaseRecoil)
         {
-            if (!shoot.fullAuto && !Input.GetButtonDown("Fire1"))
-                StartCoroutine(WaitToDecrease(.25f));
-            else if (!Input.GetButton("Fire1") || shoot.currentBulletCount == 0)
-                canIncreaseRecoil = false;
+            if (!shoot.fullAuto && !Input.GetButtonDown("Fire1") || !Input.GetButton("Fire1") || shoot.currentBulletCount == 0)
+                StartCoroutine(WaitToDecrease(.1f));
         }
     }
 
@@ -161,7 +156,7 @@ public class PlayerController : MonoBehaviour
             isCrouching = false;
 
         //Make player crouch
-        if(canCrouch && isCrouching && transform.localScale.y > crouchHeight)
+        if (canCrouch && isCrouching && transform.localScale.y > crouchHeight)
         {
             transform.localScale = new Vector3(1, transform.localScale.y - 1 * crouchSpeed, 1);
 
@@ -174,7 +169,7 @@ public class PlayerController : MonoBehaviour
                 transform.position = new Vector3(transform.position.x, crouchPosY, transform.position.z);
         }
         //Make player stand up
-        else if(!isCrouching && transform.localScale.y < standingHeight)
+        else if (!isCrouching && transform.localScale.y < standingHeight)
         {
             transform.localScale = new Vector3(1, transform.localScale.y + 1 * crouchSpeed, 1);
 
@@ -206,3 +201,4 @@ public class PlayerController : MonoBehaviour
             canJump = true;
     }
 }
+

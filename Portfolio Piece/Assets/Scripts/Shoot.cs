@@ -5,56 +5,58 @@ using TMPro;
 
 public class Shoot : MonoBehaviour
 {
-    //References
+    [Header("Main references")]
     [SerializeField] PlayerController playerControls;
     [SerializeField] Camera cam;
     [SerializeField] Animator animator;
     [SerializeField] Animator reload;
     [SerializeField] GameObject armMesh;
 
-    [Space, SerializeField] GameObject flash;
+    [Header("Flash & Bullet hole references")]
+    [SerializeField] GameObject flash;
     [SerializeField] GameObject bulletHit;
     [SerializeField] Transform muzzle;
     [SerializeField] Transform bulletHitParent;
 
-    //Damage values & fire rate
-    [Space, SerializeField] int bodyshotDamage;
+    [Header("Damage values")]
+    [SerializeField] int bodyshotDamage;
     [SerializeField] int headshotDamage;
     [SerializeField] int wallbangDamageReducer;
     [SerializeField] float autoFireRate;
     [SerializeField] float semiFireRate;
 
-    //Bullet & reload variables
-    [Space, SerializeField] public int currentBulletCount;
+    [Header("Ammo & Reload variables")]
+    [SerializeField] TextMeshProUGUI bulletCountText;
+    [SerializeField] public int currentBulletCount;
     [SerializeField] int maxBulletCount;
     [SerializeField] float reloadTime;
-    public bool reloading;
+    [HideInInspector] public bool reloading;
 
-    [SerializeField] TextMeshProUGUI bulletCountText;
-    
-    //Spray pattern variables
-    [Space, SerializeField] Vector3[] sprayPattern;
+    [Header("Spray & Spread variables")]
+    [SerializeField] Vector3[] sprayPattern;
+    [SerializeField] float sprayCorrection;
     [SerializeField] float crouchSpray;
-    [SerializeField] float sprayDivider;
     [SerializeField] bool spreadEnabled;
-    public int sprayPatternIndex;
+    [SerializeField] float spreadX;
+    [SerializeField] float spreadY;
+    int sprayPatternIndex;
     int revalueIndex;
 
-    //Recoil variables
+    [Header("Recoil variables")]
     [Space, SerializeField] float recoilValueY;
     [SerializeField] float recoilResetAddTime;
     float recoilResetTime;
 
-    float nextTimeToShoot;
+    public bool fullAuto = true;
     bool isShooting;
     bool nextShot;
-    public bool fullAuto = true;
+    float nextTimeToShoot;
 
     private void Start()
     {
         foreach (Vector3 spray in sprayPattern)
         {
-            sprayPattern[revalueIndex] = new Vector3(sprayPattern[revalueIndex].x / sprayDivider, sprayPattern[revalueIndex].y / sprayDivider, 0);
+            sprayPattern[revalueIndex] = new Vector3(sprayPattern[revalueIndex].x / sprayCorrection, sprayPattern[revalueIndex].y / sprayCorrection, 0);
             revalueIndex++;
         }
     }
@@ -73,7 +75,7 @@ public class Shoot : MonoBehaviour
 
                 ShootRaycast();
                 InstantiateFlash();
-                playerControls.AddRecoil(sprayPattern[sprayPatternIndex - 1].x * sprayDivider, recoilValueY);
+                playerControls.AddRecoil(sprayPattern[sprayPatternIndex - 1].x * sprayCorrection, recoilValueY);
 
                 recoilResetTime = recoilResetAddTime;
 
@@ -94,8 +96,8 @@ public class Shoot : MonoBehaviour
     void CheckFireModeInput()
     {
         //switch between fire modes
-        if (Input.GetButtonDown("FireMode")) 
-            fullAuto = !fullAuto;  
+        if (Input.GetButtonDown("FireMode"))
+            fullAuto = !fullAuto;
 
         //check input of mouse
         isShooting = fullAuto ? Input.GetButton("Fire1") : Input.GetButtonDown("Fire1");
@@ -129,29 +131,29 @@ public class Shoot : MonoBehaviour
 
         //adjust spray pattern according to transform.forward
         Vector3 dir;
-        if(cam.transform.forward.z >= 0)
+        if (cam.transform.forward.z >= 0)
             dir = cam.transform.forward + sprayPattern[sprayPatternIndex - 1];
         else
-            dir = cam.transform.forward + new Vector3(-sprayPattern[sprayPatternIndex -1].x, sprayPattern[sprayPatternIndex -1].y, 0);
+            dir = cam.transform.forward + new Vector3(-sprayPattern[sprayPatternIndex - 1].x, sprayPattern[sprayPatternIndex - 1].y, 0);
 
         //Lower the spray if crouching
-        if(playerControls.isCrouching)
+        if (playerControls.isCrouching)
             dir = new Vector3(dir.x / crouchSpray, dir.y / crouchSpray, dir.z);
 
         //Add spread if enabled && perserve first bullet accuracy
-        if(spreadEnabled && sprayPatternIndex != 1)
+        if (spreadEnabled && sprayPatternIndex != 1)
         {
-            float randomX = Random.Range(-.25f, .25f);
-            float randomY = Random.Range(0f, .25f);
-            dir = new Vector3(dir.x + randomX / sprayDivider, dir.y + randomY / sprayDivider, dir.z);
+            float randomX = Random.Range(-spreadX, spreadX);
+            float randomY = Random.Range(0f, spreadY);
+            dir = new Vector3(dir.x + randomX / sprayCorrection, dir.y + randomY / sprayCorrection, dir.z);
         }
 
         Vector3 ray = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.5f));
-        if(Physics.Raycast(ray, dir, out RaycastHit hit))
+        if (Physics.Raycast(ray, dir, out RaycastHit hit))
         {
             var hitEffect = Instantiate(bulletHit, hit.point, Quaternion.identity, bulletHitParent);
             hitEffect.transform.up = hit.normal;
-            StartCoroutine(DestroyEffect(10f, hitEffect));   
+            StartCoroutine(DestroyEffect(10f, hitEffect));
         }
     }
 
