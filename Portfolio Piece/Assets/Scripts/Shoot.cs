@@ -35,11 +35,13 @@ public class Shoot : MonoBehaviour
     [Header("Spray & Spread variables")]
     [SerializeField] Vector3[] sprayPattern;
     [SerializeField] float sprayCorrection;
-    [SerializeField] bool spreadEnabled;
-    [SerializeField] float spreadX;
-    [SerializeField] float spreadY;
     int sprayPatternIndex;
     int revalueIndex;
+
+    [SerializeField] TextMeshProUGUI spreadStatusText;
+    [SerializeField] float spreadX;
+    [SerializeField] float spreadY;
+    bool spreadEnabled = true;
 
     [Header("Recoil variables")]
     [Space, SerializeField] float recoilValueY;
@@ -78,9 +80,6 @@ public class Shoot : MonoBehaviour
                 sprayPatternIndex++;
 
                 ShootRaycast();
-                InstantiateFlash();
-
-                recoilResetTime = recoilResetAddTime;
 
                 float fireRate = fullAuto ? autoFireRate : semiFireRate;
                 nextTimeToShoot = Time.time + 1f / fireRate;
@@ -88,11 +87,14 @@ public class Shoot : MonoBehaviour
             }
         }
 
-        recoilResetTime -= Time.deltaTime;
-        if (recoilResetTime <= 0)
+        if(recoilResetTime > 0)
         {
-            sprayPatternIndex = 0;
-            recoilResetTime = Mathf.Infinity;
+            recoilResetTime -= Time.deltaTime;
+            if (recoilResetTime <= 0)
+            {
+                sprayPatternIndex = 0;
+                recoilResetTime = Mathf.Infinity;
+            }
         }
     }
 
@@ -125,8 +127,16 @@ public class Shoot : MonoBehaviour
             StartCoroutine(FireModeCooldown(fireModeCooldown));
         }
 
+        //Check if the player wants to (De)Activate the spread
+        if (Input.GetButtonDown("SetSpread"))
+        {
+            spreadEnabled = !spreadEnabled;
+            spreadStatusText.text = spreadEnabled ? "B : Spread on" : "B : Spread off";
+            spreadStatusText.color = spreadEnabled ? Color.green : Color.red;
+        }
+
         //check for input in between chambering rounds
-        if (nextTimeToShoot > Time.time && Input.GetButtonDown("Fire1") && !isShooting)
+        if (nextTimeToShoot > Time.time && Input.GetButtonDown("Fire1"))
             nextShot = true;
         else if (nextTimeToShoot > Time.time && Input.GetButtonUp("Fire1"))
             nextShot = false;
@@ -134,11 +144,13 @@ public class Shoot : MonoBehaviour
 
     public void ShootRaycast()
     {
-        //Reset the animation for shooting
         animator.SetTrigger("Shoot");
+
+        InstantiateFlash();
 
         //Add recoil to camera
         playerControls.AddRecoil(sprayPattern[sprayPatternIndex - 1].x * sprayCorrection, recoilValueY);
+        recoilResetTime = recoilResetAddTime;
 
         //Add spread if enabled, but make sure first bullet accuracy is perserved
         Vector3 spread;

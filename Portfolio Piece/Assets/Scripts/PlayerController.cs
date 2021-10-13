@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     float yRotation;
 
     //Look variables
-    [Space, SerializeField] float camOffset = .65f;
+    [SerializeField] float camOffset = .65f;
 
     [Header("Move & Crouch variables")]
     [SerializeField] float moveSpeed;
@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float recoilClampStanding = 10;
     [SerializeField] float recoilClampCrouching = 5;
     [SerializeField] float crouchControlX = 3;
+    [SerializeField] float stopRecoilThreshold = .2f;
     float recoilMaxX, recoilMaxY;
     float recoilValueX, recoilValueY;
     bool canIncreaseRecoil;
@@ -105,13 +106,13 @@ public class PlayerController : MonoBehaviour
             recoilValueY = Mathf.Lerp(recoilValueY, 0, 1 * Time.deltaTime * recoilSpeed);
         }
 
-        if (recoilValueX < .1 && recoilValueX > -.1 && recoilValueY < .1 && !canIncreaseRecoil)
+        if (recoilValueX < stopRecoilThreshold && recoilValueX > -stopRecoilThreshold && recoilValueY < stopRecoilThreshold && !canIncreaseRecoil)
         {
             recoilMaxX = 0;
             recoilMaxY = 0;
         }
 
-        if (recoilValueY - .1 < 0 && !canIncreaseRecoil)
+        if (recoilValueY - stopRecoilThreshold < 0 && !canIncreaseRecoil)
         {
             recoilValueX = 0;
             recoilValueY = 0;
