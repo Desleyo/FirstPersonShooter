@@ -30,7 +30,7 @@ public class Shoot : MonoBehaviour
     [SerializeField] public int currentBulletCount;
     [SerializeField] int maxBulletCount;
     [SerializeField] float reloadTime;
-    [HideInInspector] public bool reloading;
+    [HideInInspector] public bool isReloading;
 
     [Header("Spray & Spread variables")]
     [SerializeField] Vector3[] sprayPattern;
@@ -58,6 +58,9 @@ public class Shoot : MonoBehaviour
     bool nextShot;
     float nextTimeToShoot;
 
+    public Vector3 dir;
+    public Vector3 spread;
+
     private void Start()
     {
         foreach (Vector3 spray in sprayPattern)
@@ -69,10 +72,9 @@ public class Shoot : MonoBehaviour
 
     private void Update()
     {
-        CheckFireModeInput();
-        CheckReloadInput();
+        CheckInput();
 
-        if (currentBulletCount > 0 && !reloading && nextTimeToShoot < Time.time)
+        if (currentBulletCount > 0 && !isReloading && nextTimeToShoot < Time.time)
         {
             if (isShooting || nextShot)
             {
@@ -99,19 +101,34 @@ public class Shoot : MonoBehaviour
         }
     }
 
-    void CheckFireModeInput()
+    void CheckInput()
     {
-        //switch between fire modes
-        if (Input.GetButton("FireMode") && canSwitchFireMode)
+        //Check if the player wants to fire a bullet
+        isShooting = fullAuto ? Input.GetButton("Fire1") : Input.GetButtonDown("Fire1");
+
+        //Check if the player wants to reload, or if the gun is empty
+        if (Input.GetButtonDown("Reload") && !isReloading && nextTimeToShoot < Time.time && currentBulletCount != maxBulletCount || currentBulletCount == 0 && !isReloading && nextTimeToShoot < Time.time)
+        {
+            reload.gameObject.SetActive(true);
+            armMesh.SetActive(false);
+
+            reload.SetTrigger("Reload");
+            StartCoroutine(Reload(reloadTime));
+            isReloading = true;
+        }
+
+        //Display the bulletcount on screen
+        if (!isReloading)
+            bulletCountText.text = currentBulletCount + "|" + maxBulletCount;
+
+        //Check if the player wants to switch firemodes
+        if (Input.GetButton("FireMode") && canSwitchFireMode && !isShooting && !isReloading)
         {
             fullAuto = !fullAuto;
             fireModeText.text = fullAuto ? "Auto" : "Semi";
             canSwitchFireMode = false;
             StartCoroutine(FireModeCooldown(fireModeCooldown));
         }
-
-        //check input of mouse
-        isShooting = fullAuto ? Input.GetButton("Fire1") : Input.GetButtonDown("Fire1");
 
         //check for input in between chambering rounds
         if (nextTimeToShoot > Time.time && Input.GetButtonDown("Fire1") && !isShooting)
@@ -120,32 +137,13 @@ public class Shoot : MonoBehaviour
             nextShot = false;
     }
 
-    void CheckReloadInput()
-    {
-        //Check if the player wants to reload, or if the gun is empty
-        if (Input.GetButtonDown("Reload") && !reloading && nextTimeToShoot < Time.time && currentBulletCount != maxBulletCount || currentBulletCount == 0 && !reloading && nextTimeToShoot < Time.time)
-        {
-            reload.gameObject.SetActive(true);
-            armMesh.SetActive(false);
-
-            reload.SetTrigger("Reload");
-            StartCoroutine(Reload(reloadTime));
-            reloading = true;
-        }
-        if (!reloading)
-            bulletCountText.text = currentBulletCount + "|" + maxBulletCount;
-    }
-
     public void ShootRaycast()
     {
         animator.SetTrigger("Shoot");
 
         //adjust spray pattern according to transform.forward
-        Vector3 dir;
-        if (cam.transform.forward.z >= 0)
-            dir = cam.transform.forward + sprayPattern[sprayPatternIndex - 1];
-        else
-            dir = cam.transform.forward + new Vector3(-sprayPattern[sprayPatternIndex - 1].x, sprayPattern[sprayPatternIndex - 1].y, 0);
+        dir = cam.transform.forward;
+        dir += dir.z >= 0 ? sprayPattern[sprayPatternIndex - 1] : new Vector3(-sprayPattern[sprayPatternIndex - 1].x, sprayPattern[sprayPatternIndex - 1].y, 0);
 
         //Lower the spray if crouching
         if (playerControls.isCrouching)
@@ -156,11 +154,14 @@ public class Shoot : MonoBehaviour
         {
             float randomX = Random.Range(-spreadX, spreadX);
             float randomY = Random.Range(0f, spreadY);
-            dir = new Vector3(dir.x + randomX / sprayCorrection, dir.y + randomY / sprayCorrection, dir.z);
+
+            spread = new Vector3(randomX / sprayCorrection, randomY / sprayCorrection, 0);
         }
+        else
+            spread = new Vector3(0, 0, 0);
 
         Vector3 ray = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.5f));
-        if (Physics.Raycast(ray, dir, out RaycastHit hit))
+        if (Physics.Raycast(ray, dir + spread, out RaycastHit hit))
         {
             var hitEffect = Instantiate(bulletHit, hit.point, Quaternion.identity, bulletHitParent);
             hitEffect.transform.up = hit.normal;
@@ -189,7 +190,7 @@ public class Shoot : MonoBehaviour
         yield return new WaitForSeconds(time);
 
         nextShot = false;
-        reloading = false;
+        isReloading = false;
 
         animator.ResetTrigger("Reload");
 
