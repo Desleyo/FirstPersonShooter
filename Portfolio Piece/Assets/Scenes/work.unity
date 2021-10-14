@@ -978,8 +978,8 @@ MonoBehaviour:
   crouchPosY: 0.55
   standingHeight: 1
   standingPosY: 1.01
-  recoilSpeed: 2
-  recoilClampStanding: 12
+  recoilSpeed: 3
+  recoilClampStanding: 15
   recoilClampCrouching: 9
   crouchControlX: 1.5
   stopRecoilThreshold: 0.25
