@@ -782,7 +782,7 @@ MonoBehaviour:
   headshotDamage: 123
   wallbangDamageReducer: 13
   autoFireRate: 7.5
-  semiFireRate: 5
+  semiFireRate: 2.5
   bulletCountText: {fileID: 174939207}
   currentBulletCount: 30
   maxBulletCount: 30
@@ -979,8 +979,8 @@ MonoBehaviour:
   standingHeight: 1
   standingPosY: 1.01
   recoilSpeed: 3
-  recoilClampStanding: 15
-  recoilClampCrouching: 9
+  recoilClampStanding: 18
+  recoilClampCrouching: 12
   crouchControlX: 1.5
   stopRecoilThreshold: 0.25
 --- !u!54 &286761770
@@ -3320,7 +3320,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 31.799866, y: 43.400055}
+  m_AnchoredPosition: {x: 31.799805, y: 43.400024}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1808928489
@@ -3890,7 +3890,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 33.00006, y: 75.79999}
+  m_AnchoredPosition: {x: 33, y: 75.80005}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &2109800842
