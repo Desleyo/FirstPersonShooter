@@ -41,6 +41,7 @@ public class Shoot : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI spreadStatusText;
     Vector3 spreading;
+    [SerializeField] float[] spreadPatternY;
     [SerializeField] float normalSpread;
     [SerializeField] float movingSpread;
     [SerializeField] float jumpingSpread;
@@ -161,9 +162,17 @@ public class Shoot : MonoBehaviour
         {
             if(sprayPatternIndex != 1 || playerControls.isMoving || !playerControls.CanJump())
             {
+                //Check how much spread is needed according to the movement of the player
                 float spread = !playerControls.CanJump() ? jumpingSpread : playerControls.isMoving ? movingSpread : normalSpread;
+                if (playerControls.isCrouching)
+                    spread /= 2;
+
                 float randomX = Random.Range(-spread, spread);
-                float randomY = Random.Range(0f, spread);
+                float randomY;
+                if (spread == normalSpread || spread == normalSpread / 2)
+                    randomY = spreadPatternY[sprayPatternIndex - 1];
+                else
+                    randomY = Random.Range(-spread, spread);
 
                 spreading = new Vector3(randomX / sprayCorrection, randomY / sprayCorrection, 0);
             }
