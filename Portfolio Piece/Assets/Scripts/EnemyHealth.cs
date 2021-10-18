@@ -16,7 +16,7 @@ public class EnemyHealth : MonoBehaviour
 
         if (health <= 0)
         {
-            //Here: start coroutine for new bot same transform as this
+            EnemySpawner.enemySpawner.SpawnEnemy(transform);
             UpdateKillFeed();
         }
     }

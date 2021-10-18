@@ -181,6 +181,8 @@ public class Shoot : MonoBehaviour
             else if (hit.collider.CompareTag("Head"))
                 hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(headshotDamage - subtractFromDamage, true, wallBanged);
 
+            Debug.DrawRay(point, cam.transform.TransformDirection(Vector3.forward + spread), Color.red, 10f);
+
             CheckForWallbang(hit, spread);
         }
     }
@@ -190,7 +192,8 @@ public class Shoot : MonoBehaviour
         //Check if a new raycast needs to be fired from the hit point
         if (rayHit.collider.gameObject.layer == 7)
         {
-            ShootRaycast(rayHit.point, spread, wallbangDamageReducer, true);
+            //Shoot new raycast from the point you wallbanged + add 1 on the forward axis so u dont wallbang the same object
+            ShootRaycast(rayHit.point + cam.transform.TransformDirection(new Vector3(0, 0, 1)), spread, wallbangDamageReducer, true);
         }
         else
         {
