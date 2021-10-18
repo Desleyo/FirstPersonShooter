@@ -18,16 +18,20 @@ public class PlayerController : MonoBehaviour
 
     [Header("Move & Crouch variables")]
     [SerializeField] float moveSpeed;
+    [HideInInspector] public bool isMoving;
+    float horizontal, vertical;
+
     [SerializeField] float crouchMoveSpeed;
     [SerializeField] float crouchSpeed;
     [SerializeField] float crouchCooldown = .5f;
     [HideInInspector] public bool isCrouching = false;
     bool canCrouch = true;
-    float horizontal, vertical;
 
     //Jump variables
     [Space, SerializeField] float jumpForce;
-    bool canJump = true;
+    [SerializeField] float normalSphereRadius;
+    [SerializeField] float crouchingSphereRadius;
+    Collider[] colliders;
 
     [Header("Standing & Crouch values")]
     [SerializeField] float crouchHeight = .5f;
@@ -137,6 +141,8 @@ public class PlayerController : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
+        isMoving = horizontal != 0 || vertical != 0 ? true : false;
+
         Vector3 dir = new Vector3(horizontal, 0, vertical);
         dir = Vector3.ClampMagnitude(dir, 1f);
 
@@ -146,13 +152,25 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetButtonDown("Jump") && canJump)
+        if (Input.GetButtonDown("Jump") && CanJump())
         {
-            canJump = false;
-
             var jumpVelocity = Mathf.Sqrt(2 * -Physics.gravity.y * jumpForce);
             rb.AddRelativeForce(0, jumpVelocity, 0, ForceMode.Impulse);
         }
+    }
+
+    public bool CanJump()
+    {
+        bool canJump = false;
+        float finalRadius = isCrouching ? crouchingSphereRadius : normalSphereRadius;
+        colliders = Physics.OverlapSphere(transform.position, finalRadius);
+        foreach(Collider collider in colliders)
+        {
+            if (collider.CompareTag("Ground"))
+                canJump = true;
+        }
+
+        return canJump;
     }
 
     void Crouch()
@@ -172,7 +190,7 @@ public class PlayerController : MonoBehaviour
                 transform.localScale = new Vector3(1, crouchHeight, 1);
 
             //If the player isn't airborne put player on the ground
-            if (canJump && transform.position.y <= 1.1f)
+            if (transform.position.y <= 1.1f)
                 transform.position = new Vector3(transform.position.x, crouchPosY, transform.position.z);
         }
         //Make player stand up
@@ -186,26 +204,20 @@ public class PlayerController : MonoBehaviour
                 transform.localScale = new Vector3(1, standingHeight, 1);
 
                 canCrouch = false;
-                StartCoroutine(WaitForCooldown());
+                StartCoroutine(WaitForCrouchCooldown());
             }
 
             //If player isn't airborne put player on ground
-            if (canJump)
+            if (CanJump())
                 transform.position = new Vector3(transform.position.x, standingPosY, transform.position.z);
         }
     }
 
-    IEnumerator WaitForCooldown()
+    IEnumerator WaitForCrouchCooldown()
     {
         yield return new WaitForSeconds(crouchCooldown);
 
         canCrouch = true;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
-            canJump = true;
     }
 }
 

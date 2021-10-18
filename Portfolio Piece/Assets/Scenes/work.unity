@@ -936,8 +936,9 @@ MonoBehaviour:
   - {x: -3, y: 16, z: 0}
   sprayCorrection: 100
   spreadStatusText: {fileID: 2109800843}
-  spreadX: 2
-  spreadY: 5
+  normalSpread: 2
+  movingSpread: 5
+  jumpingSpread: 10
   recoilValueY: 5
   recoilResetAddTime: 0.25
   fireModeText: {fileID: 1808928489}
@@ -1084,11 +1085,14 @@ MonoBehaviour:
   sensitivity: 0.65
   camOffset: 0.65
   moveSpeed: 5
+  isMoving: 0
   crouchMoveSpeed: 3
   crouchSpeed: 1
   crouchCooldown: 0.33
   isCrouching: 0
   jumpForce: 1
+  normalSphereRadius: 1.01
+  crouchingSphereRadius: 0.71
   crouchHeight: 0.7
   crouchPosY: 0.55
   standingHeight: 1

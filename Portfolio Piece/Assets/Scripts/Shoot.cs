@@ -40,8 +40,10 @@ public class Shoot : MonoBehaviour
     int revalueIndex;
 
     [SerializeField] TextMeshProUGUI spreadStatusText;
-    [SerializeField] float spreadX;
-    [SerializeField] float spreadY;
+    Vector3 spreading;
+    [SerializeField] float normalSpread;
+    [SerializeField] float movingSpread;
+    [SerializeField] float jumpingSpread;
     bool spreadEnabled = true;
 
     [Header("Recoil variables")]
@@ -154,16 +156,18 @@ public class Shoot : MonoBehaviour
         recoilResetTime = recoilResetAddTime;
 
         //Add spread if enabled, but make sure first bullet accuracy is perserved
-        Vector3 spreading;
-        if (spreadEnabled && sprayPatternIndex != 1)
+        spreading = new Vector3(0, 0, 0);
+        if (spreadEnabled)
         {
-            float randomX = Random.Range(-spreadX, spreadX);
-            float randomY = Random.Range(0f, spreadY);
+            if(sprayPatternIndex != 1 || playerControls.isMoving || !playerControls.CanJump())
+            {
+                float spread = !playerControls.CanJump() ? jumpingSpread : playerControls.isMoving ? movingSpread : normalSpread;
+                float randomX = Random.Range(-spread, spread);
+                float randomY = Random.Range(0f, spread);
 
-            spreading = new Vector3(randomX / sprayCorrection, randomY / sprayCorrection, 0);
-        }
-        else
-            spreading = new Vector3(0, 0, 0);
+                spreading = new Vector3(randomX / sprayCorrection, randomY / sprayCorrection, 0);
+            }
+        }         
 
         ShootRaycast(cam.transform.position, spreading, 0, false);
     }
@@ -181,17 +185,19 @@ public class Shoot : MonoBehaviour
             else if (hit.collider.CompareTag("Head"))
                 hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(headshotDamage - subtractFromDamage, true, wallBanged);
 
-            CheckForWallbang(hit, spread);
+            CheckForWallbang(hit);
         }
     }
 
-    void CheckForWallbang(RaycastHit rayHit, Vector3 spread)
+    void CheckForWallbang(RaycastHit rayHit)
     {
         //Check if a new raycast needs to be fired from the hit point
         if (rayHit.collider.gameObject.layer == 7)
         {
             //Shoot new raycast from the point you wallbanged + add 1 on the forward axis so u dont wallbang the same object
-            ShootRaycast(rayHit.point + cam.transform.TransformDirection(new Vector3(0, 0, 1)), spread, wallbangDamageReducer, true);
+            Vector3 noSpread = new Vector3(0, 0, 0);
+            Vector3 forwardOffset = new Vector3(0, 0, 1);
+            ShootRaycast(rayHit.point + cam.transform.TransformDirection(forwardOffset), noSpread, wallbangDamageReducer, true);
         }
         else
         {
