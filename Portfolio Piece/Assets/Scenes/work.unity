@@ -895,7 +895,6 @@ MonoBehaviour:
   bodyshotDamage: 31
   headshotDamage: 123
   wallbangDamageReducer: 13
-  subtractFromDamage: 0
   autoFireRate: 7.5
   semiFireRate: 4
   bulletCountText: {fileID: 174939207}

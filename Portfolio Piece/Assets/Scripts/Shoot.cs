@@ -22,7 +22,7 @@ public class Shoot : MonoBehaviour
     [SerializeField] int bodyshotDamage;
     [SerializeField] int headshotDamage;
     [SerializeField] int wallbangDamageReducer;
-    [SerializeField] int subtractFromDamage;
+     int subtractFromDamage;
     [SerializeField] float autoFireRate;
     [SerializeField] float semiFireRate;
 
