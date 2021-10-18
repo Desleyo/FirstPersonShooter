@@ -181,8 +181,6 @@ public class Shoot : MonoBehaviour
             else if (hit.collider.CompareTag("Head"))
                 hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(headshotDamage - subtractFromDamage, true, wallBanged);
 
-            Debug.DrawRay(point, cam.transform.TransformDirection(Vector3.forward + spread), Color.red, 10f);
-
             CheckForWallbang(hit, spread);
         }
     }
