@@ -22,6 +22,7 @@ public class Shoot : MonoBehaviour
     [SerializeField] int bodyshotDamage;
     [SerializeField] int headshotDamage;
     [SerializeField] int wallbangDamageReducer;
+    [SerializeField] int subtractFromDamage;
     [SerializeField] float autoFireRate;
     [SerializeField] float semiFireRate;
 
@@ -79,7 +80,7 @@ public class Shoot : MonoBehaviour
                 currentBulletCount--;
                 sprayPatternIndex++;
 
-                ShootRaycast();
+                SetupRaycast();
 
                 float fireRate = fullAuto ? autoFireRate : semiFireRate;
                 nextTimeToShoot = Time.time + 1f / fireRate;
@@ -142,7 +143,7 @@ public class Shoot : MonoBehaviour
             nextShot = false;
     }
 
-    public void ShootRaycast()
+    public void SetupRaycast()
     {
         animator.SetTrigger("Shoot");
 
@@ -153,22 +154,52 @@ public class Shoot : MonoBehaviour
         recoilResetTime = recoilResetAddTime;
 
         //Add spread if enabled, but make sure first bullet accuracy is perserved
-        Vector3 spread;
+        Vector3 spreading;
         if (spreadEnabled && sprayPatternIndex != 1)
         {
             float randomX = Random.Range(-spreadX, spreadX);
             float randomY = Random.Range(0f, spreadY);
 
-            spread = new Vector3(randomX / sprayCorrection, randomY / sprayCorrection, 0);
+            spreading = new Vector3(randomX / sprayCorrection, randomY / sprayCorrection, 0);
         }
         else
-            spread = new Vector3(0, 0, 0);
+            spreading = new Vector3(0, 0, 0);
 
-        if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward + spread), out RaycastHit hit))
+        ShootRaycast(cam.transform.position, spreading, 0, false);
+    }
+
+    void ShootRaycast(Vector3 point, Vector3 spread, int subtract, bool wallBanged)
+    {
+        subtractFromDamage += subtract;
+
+        if (Physics.Raycast(point, cam.transform.TransformDirection(Vector3.forward + spread), out RaycastHit hit))
         {
-            var hitEffect = Instantiate(bulletHit, hit.point, Quaternion.identity, bulletHitParent);
-            hitEffect.transform.up = hit.normal;
+            //Damage according to bodyShot values
+            if (hit.collider.CompareTag("Body"))
+                hit.collider.GetComponent<EnemyHealth>().TakeDamage(bodyshotDamage - subtractFromDamage, false, wallBanged);
+            //Damage according to headShot values
+            else if (hit.collider.CompareTag("Head"))
+                hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(headshotDamage - subtractFromDamage, true, wallBanged);
+
+            CheckForWallbang(hit, spread);
+        }
+    }
+
+    void CheckForWallbang(RaycastHit rayHit, Vector3 spread)
+    {
+        //Check if a new raycast needs to be fired from the hit point
+        if (rayHit.collider.gameObject.layer == 7)
+        {
+            ShootRaycast(rayHit.point, spread, wallbangDamageReducer, true);
+        }
+        else
+        {
+            //Show impact hole
+            var hitEffect = Instantiate(bulletHit, rayHit.point, Quaternion.identity, bulletHitParent);
+            hitEffect.transform.up = rayHit.normal;
             StartCoroutine(DestroyEffect(10f, hitEffect));
+
+            subtractFromDamage = 0;
         }
     }
 
