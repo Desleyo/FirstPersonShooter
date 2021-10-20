@@ -36,7 +36,7 @@ public class Shoot : MonoBehaviour
     [Header("Recoil & Spread variables")]
     [SerializeField] TextMeshProUGUI spreadStatusText;
     [SerializeField] float recoilSpreadCorrection;
-    [SerializeField] float[] recoilPatternX;
+    [SerializeField] float[] spreadPatternX;
     [SerializeField] float[] spreadPatternY;
     [SerializeField] float normalSpread;
     [SerializeField] float movingSpread;
@@ -45,7 +45,8 @@ public class Shoot : MonoBehaviour
     Vector3 spreading;
     int patternIndex;
 
-    [Space, SerializeField] float recoilValueY;
+    [Space, SerializeField] float recoilValueX;
+    [SerializeField] float recoilValueY;
     [SerializeField] float autoRecoilResetTime;
     [SerializeField] float semiRecoilResetTime;
     float recoilResetTime;
@@ -142,7 +143,8 @@ public class Shoot : MonoBehaviour
         InstantiateFlash();
 
         //Add recoil to camera according to the fireMode
-        float recoilX = fullAuto ? recoilPatternX[patternIndex - 1] : 0;
+        float condition = spreadPatternX[patternIndex - 1];
+        float recoilX = condition > 0 ? recoilValueX : condition < 0 ? -recoilValueX : 0;
         playerControls.AddRecoil(recoilX, recoilValueY);
         recoilResetTime = fullAuto ? autoRecoilResetTime : semiRecoilResetTime;
 
@@ -157,14 +159,20 @@ public class Shoot : MonoBehaviour
                 if (playerControls.isCrouching)
                     spread /= 2;
 
-                float randomX = Random.Range(-spread, spread);
+                float randomX;
                 float randomY;
-                if(!fullAuto)
-                    randomY = Random.Range(-spread, spread);
-                else if (spread == normalSpread || spread == normalSpread / 2)
-                    randomY = spreadPatternY[patternIndex - 1];
+                if (!fullAuto)
+                    randomX = randomY = Random.Range(-spread, spread);
                 else
-                    randomY = Random.Range(-spread, spread);
+                {
+                    if (spread == normalSpread || spread == normalSpread / 2)
+                    {
+                        randomX = spreadPatternX[patternIndex - 1] + Random.Range(-spread, spread);
+                        randomY = spreadPatternY[patternIndex - 1];
+                    }
+                    else
+                        randomX = randomY  = Random.Range(-spread, spread);
+                }
 
                 spreading = new Vector3(randomX / recoilSpreadCorrection, randomY / recoilSpreadCorrection, 0);
             }

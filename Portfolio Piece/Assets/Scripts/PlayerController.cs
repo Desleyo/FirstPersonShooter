@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Recoil variables")]
     [SerializeField] float recoilSpeed;
+    [SerializeField] float recoilClampX;
     [SerializeField] float recoilClampY;
     [SerializeField] float crouchControlX = 3;
     [SerializeField] float stopRecoilThreshold = .2f;
@@ -82,13 +83,11 @@ public class PlayerController : MonoBehaviour
 
     public void AddRecoil(float valueX, float valueY)
     {
-        //Check if the recoil on the X axis needs to be lowered due to crouching
-        float addRecoilMaxX = isCrouching ? valueX / crouchControlX : valueX;
-
-        recoilMaxX += addRecoilMaxX;
+        recoilMaxX += valueX;
         recoilMaxY += valueY;
 
         //Clamp max recoil on the Y axis
+        recoilMaxX = Mathf.Clamp(recoilMaxX, -recoilClampX, recoilClampX);
         recoilMaxY = Mathf.Clamp(recoilMaxY, 0, recoilClampY);
 
         canIncreaseRecoil = true;
