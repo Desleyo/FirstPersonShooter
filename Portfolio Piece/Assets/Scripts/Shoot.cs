@@ -33,23 +33,21 @@ public class Shoot : MonoBehaviour
     [SerializeField] float reloadTime;
     [HideInInspector] public bool isReloading;
 
-    [Header("Spray & Spread variables")]
-    [SerializeField] Vector3[] sprayPattern;
-    [SerializeField] float sprayCorrection;
-    int sprayPatternIndex;
-    int revalueIndex;
-
+    [Header("Recoil & Spread variables")]
     [SerializeField] TextMeshProUGUI spreadStatusText;
-    Vector3 spreading;
+    [SerializeField] float recoilSpreadCorrection;
+    [SerializeField] float[] recoilPatternX;
     [SerializeField] float[] spreadPatternY;
     [SerializeField] float normalSpread;
     [SerializeField] float movingSpread;
     [SerializeField] float jumpingSpread;
     bool spreadEnabled = true;
+    Vector3 spreading;
+    int patternIndex;
 
-    [Header("Recoil variables")]
     [Space, SerializeField] float recoilValueY;
-    [SerializeField] float recoilResetAddTime;
+    [SerializeField] float autoRecoilResetTime;
+    [SerializeField] float semiRecoilResetTime;
     float recoilResetTime;
 
     [Header("FireMode variables")]
@@ -63,15 +61,6 @@ public class Shoot : MonoBehaviour
     bool nextShot;
     float nextTimeToShoot;
 
-    private void Awake()
-    {
-        foreach (Vector3 spray in sprayPattern)
-        {
-            sprayPattern[revalueIndex] = new Vector3(sprayPattern[revalueIndex].x / sprayCorrection, sprayPattern[revalueIndex].y / sprayCorrection, 0);
-            revalueIndex++;
-        }
-    }
-
     private void Update()
     {
         CheckInput();
@@ -81,7 +70,7 @@ public class Shoot : MonoBehaviour
             if (isShooting || nextShot)
             {
                 currentBulletCount--;
-                sprayPatternIndex++;
+                patternIndex++;
 
                 SetupRaycast();
 
@@ -96,7 +85,7 @@ public class Shoot : MonoBehaviour
             recoilResetTime -= Time.deltaTime;
             if (recoilResetTime <= 0)
             {
-                sprayPatternIndex = 0;
+                patternIndex = 0;
                 recoilResetTime = Mathf.Infinity;
             }
         }
@@ -152,15 +141,16 @@ public class Shoot : MonoBehaviour
 
         InstantiateFlash();
 
-        //Add recoil to camera
-        playerControls.AddRecoil(sprayPattern[sprayPatternIndex - 1].x * sprayCorrection, recoilValueY);
-        recoilResetTime = recoilResetAddTime;
+        //Add recoil to camera according to the fireMode
+        float recoilX = fullAuto ? recoilPatternX[patternIndex - 1] : 0;
+        playerControls.AddRecoil(recoilX, recoilValueY);
+        recoilResetTime = fullAuto ? autoRecoilResetTime : semiRecoilResetTime;
 
         //Add spread if enabled, but make sure first bullet accuracy is perserved
         spreading = new Vector3(0, 0, 0);
         if (spreadEnabled)
         {
-            if(sprayPatternIndex != 1 || playerControls.isMoving || !playerControls.CanJump())
+            if(patternIndex != 1 || playerControls.isMoving || !playerControls.CanJump())
             {
                 //Check how much spread is needed according to the movement of the player
                 float spread = !playerControls.CanJump() ? jumpingSpread : playerControls.isMoving ? movingSpread : normalSpread;
@@ -169,12 +159,14 @@ public class Shoot : MonoBehaviour
 
                 float randomX = Random.Range(-spread, spread);
                 float randomY;
-                if (spread == normalSpread || spread == normalSpread / 2)
-                    randomY = spreadPatternY[sprayPatternIndex - 1];
+                if(!fullAuto)
+                    randomY = Random.Range(-spread, spread);
+                else if (spread == normalSpread || spread == normalSpread / 2)
+                    randomY = spreadPatternY[patternIndex - 1];
                 else
                     randomY = Random.Range(-spread, spread);
 
-                spreading = new Vector3(randomX / sprayCorrection, randomY / sprayCorrection, 0);
+                spreading = new Vector3(randomX / recoilSpreadCorrection, randomY / recoilSpreadCorrection, 0);
             }
         }         
 
