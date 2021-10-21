@@ -43,7 +43,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float recoilSpeed;
     [SerializeField] float recoilClampX;
     [SerializeField] float recoilClampY;
-    [SerializeField] float crouchControlX = 3;
     [SerializeField] float stopRecoilThreshold = .2f;
     float recoilMaxX, recoilMaxY;
     float recoilValueX, recoilValueY;
@@ -138,7 +137,7 @@ public class PlayerController : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
-        isMoving = horizontal != 0 || vertical != 0 ? true : false;
+        isMoving = horizontal != 0 || vertical != 0;
 
         Vector3 dir = new Vector3(horizontal, 0, vertical);
         dir = Vector3.ClampMagnitude(dir, 1f);

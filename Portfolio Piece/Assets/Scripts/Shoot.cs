@@ -61,6 +61,7 @@ public class Shoot : MonoBehaviour
     bool isShooting;
     bool nextShot;
     float nextTimeToShoot;
+    RaycastHit previousHit;
 
     private void Update()
     {
@@ -184,38 +185,60 @@ public class Shoot : MonoBehaviour
     void ShootRaycast(Vector3 point, Vector3 spread, int subtract, bool wallBanged)
     {
         subtractFromDamage += subtract;
+        string tag = "Untagged";
+
+        if (!wallBanged)
+            tag = "Untagged";
 
         if (Physics.Raycast(point, cam.transform.TransformDirection(Vector3.forward + spread), out RaycastHit hit))
         {
+            //Add impact hole for wallbang (this hole will be placed where the bullet exits the wallbanged surface)
+            if (wallBanged)
+                ImpactHole(tag, point, previousHit);
+
+            previousHit = hit;
+            
+            tag = hit.collider.tag;
+
             //Damage according to bodyShot values
-            if (hit.collider.CompareTag("Body"))
+            if (tag == "Body")
                 hit.collider.GetComponent<EnemyHealth>().TakeDamage(bodyshotDamage - subtractFromDamage, false, wallBanged);
             //Damage according to headShot values
-            else if (hit.collider.CompareTag("Head"))
+            else if (tag == "Head")
                 hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(headshotDamage - subtractFromDamage, true, wallBanged);
+            //else if (hit.collider.CompareTag("Wall"))
+
+            //Add impact hole (this hole will be placed where the raycast intersects with an object)
+            ImpactHole(tag, hit.point, hit);
 
             CheckForWallbang(hit);
         }
     }
 
-    void CheckForWallbang(RaycastHit rayHit)
+    void CheckForWallbang(RaycastHit hit)
     {
         //Check if a new raycast needs to be fired from the hit point
-        if (rayHit.collider.gameObject.layer == 7)
+        if (hit.collider.gameObject.layer == 7)
         {
             //Shoot new raycast from the point you wallbanged + add 1 on the forward axis so u dont wallbang the same object
             Vector3 noSpread = new Vector3(0, 0, 0);
-            Vector3 forwardOffset = new Vector3(0, 0, 1);
-            ShootRaycast(rayHit.point + cam.transform.TransformDirection(forwardOffset), noSpread, wallbangDamageReducer, true);
+            Vector3 forwardOffset = new Vector3(0, 0, .8f);
+            ShootRaycast(hit.point + cam.transform.TransformDirection(forwardOffset), noSpread, wallbangDamageReducer, true);
         }
         else
-        {
-            //Show impact hole
-            var hitEffect = Instantiate(bulletHit, rayHit.point, Quaternion.identity, bulletHitParent);
-            hitEffect.transform.up = rayHit.normal;
-            StartCoroutine(DestroyEffect(10f, hitEffect));
-
             subtractFromDamage = 0;
+    }
+
+    void ImpactHole(string tag, Vector3 point, RaycastHit hit)
+    {
+        //Show impact hole
+        if (tag != "Body" && tag != "Head")
+        {
+            Transform parent = tag == "Ground" || tag == "Untagged" ? bulletHitParent : hit.collider.gameObject.transform;
+            var hitEffect = Instantiate(bulletHit, point, Quaternion.identity, parent);
+            hitEffect.transform.up = hit.normal;
+
+            StartCoroutine(DestroyEffect(10f, hitEffect));
         }
     }
 
