@@ -245,7 +245,7 @@ public class Shoot : MonoBehaviour
             var hitEffect = Instantiate(bulletHit, point, Quaternion.identity, parent);
             hitEffect.transform.up = hit.normal;
 
-            StartCoroutine(DestroyEffect(10f, hitEffect));
+            StartCoroutine(DestroyEffect(5f, hitEffect));
         }
     }
 
@@ -260,7 +260,8 @@ public class Shoot : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
 
-        Destroy(effect);
+        if(effect)
+            Destroy(effect);
 
         StopCoroutine(nameof(DestroyEffect));
     }
