@@ -22,7 +22,7 @@ public class Shoot : MonoBehaviour
     [SerializeField] int bodyshotDamage;
     [SerializeField] int headshotDamage;
     [SerializeField] int wallbangDamageReducer;
-     int subtractFromDamage;
+    int subtractFromDamage;
     [SerializeField] float autoFireRate;
     [SerializeField] float semiFireRate;
 
@@ -177,28 +177,21 @@ public class Shoot : MonoBehaviour
 
                 spreading = new Vector3(randomX / recoilSpreadCorrection, randomY / recoilSpreadCorrection, 0);
             }
-        }         
+        }
 
-        ShootRaycast(cam.transform.position, spreading, 0, false);
+        ShootRaycast(cam.transform.position, spreading, 0, false, null);
     }
 
-    void ShootRaycast(Vector3 point, Vector3 spread, int subtract, bool wallBanged)
+    void ShootRaycast(Vector3 point, Vector3 spread, int subtract, bool wallBanged, Collider wallBangedCollider)
     {
         subtractFromDamage += subtract;
-        string tag = "Untagged";
-
-        if (!wallBanged)
-            tag = "Untagged";
 
         if (Physics.Raycast(point, cam.transform.TransformDirection(Vector3.forward + spread), out RaycastHit hit))
         {
-            //Add impact hole for wallbang (this hole will be placed where the bullet exits the wallbanged surface)
             if (wallBanged)
-                ImpactHole(tag, point, previousHit);
+                wallBangedCollider.enabled = true;
 
-            previousHit = hit;
-            
-            tag = hit.collider.tag;
+            string tag = hit.collider.tag;
 
             //Damage according to bodyShot values
             if (tag == "Body")
@@ -206,24 +199,36 @@ public class Shoot : MonoBehaviour
             //Damage according to headShot values
             else if (tag == "Head")
                 hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(headshotDamage - subtractFromDamage, true, wallBanged);
-            //else if (hit.collider.CompareTag("Wall"))
+            //Damage the wall
+            else if (hit.collider.CompareTag("Wall"))
+                hit.collider.GetComponentInParent<WallHealth>().TakeDamage(bodyshotDamage - subtractFromDamage);
 
-            //Add impact hole (this hole will be placed where the raycast intersects with an object)
             ImpactHole(tag, hit.point, hit);
-
             CheckForWallbang(hit);
+        }
+        else
+        {
+            if (wallBanged)
+                wallBangedCollider.enabled = true;
+
+            subtractFromDamage = 0;
         }
     }
 
     void CheckForWallbang(RaycastHit hit)
     {
+        GameObject hitObject = hit.collider.gameObject;
+
         //Check if a new raycast needs to be fired from the hit point
-        if (hit.collider.gameObject.layer == 7)
+        if (hitObject.layer == 7)
         {
-            //Shoot new raycast from the point you wallbanged + add 1 on the forward axis so u dont wallbang the same object
+            //Disable collider for just a frame to let the raycast through
+            Collider hitCollider = hitObject.GetComponent<Collider>();
+            hitCollider.enabled = false;
+
+            //Shoot new raycast from the point you wallbanged
             Vector3 noSpread = new Vector3(0, 0, 0);
-            Vector3 forwardOffset = new Vector3(0, 0, .8f);
-            ShootRaycast(hit.point + cam.transform.TransformDirection(forwardOffset), noSpread, wallbangDamageReducer, true);
+            ShootRaycast(hit.point, noSpread, wallbangDamageReducer, true, hitCollider);
         }
         else
             subtractFromDamage = 0;
@@ -231,8 +236,10 @@ public class Shoot : MonoBehaviour
 
     void ImpactHole(string tag, Vector3 point, RaycastHit hit)
     {
+        int health = tag == "Wall" ? hit.collider.GetComponentInParent<WallHealth>().health : 100;
+
         //Show impact hole
-        if (tag != "Body" && tag != "Head")
+        if (tag != "Body" && tag != "Head" && health > 0)
         {
             Transform parent = tag == "Ground" || tag == "Untagged" ? bulletHitParent : hit.collider.gameObject.transform;
             var hitEffect = Instantiate(bulletHit, point, Quaternion.identity, parent);

@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
         colliders = Physics.OverlapSphere(transform.position, finalRadius);
         foreach(Collider collider in colliders)
         {
-            if (collider.CompareTag("Ground"))
+            if (collider.CompareTag("Ground") || collider.CompareTag("BrokenWall"))
                 canJump = true;
         }
 
