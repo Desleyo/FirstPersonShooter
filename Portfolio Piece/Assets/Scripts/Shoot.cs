@@ -262,8 +262,6 @@ public class Shoot : MonoBehaviour
 
         if(effect)
             Destroy(effect);
-
-        StopCoroutine(nameof(DestroyEffect));
     }
 
     IEnumerator Reload(float time)

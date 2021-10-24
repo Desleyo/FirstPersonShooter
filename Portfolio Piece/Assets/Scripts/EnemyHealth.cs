@@ -5,35 +5,32 @@ using TMPro;
 
 public class EnemyHealth : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI healthText;
+    public string enemyName;
+
+    [Space, SerializeField] TextMeshProUGUI healthText;
     [SerializeField] int health = 100;
-    bool gotHeadShot;
-    bool gotWallBanged;
+    bool died;
 
     private void Start()
     {
         healthText.text = health.ToString();
+        died = false;
     }
 
     public void TakeDamage(int damage, bool headShot, bool wallBanged)
     {
         health -= damage;
-        gotHeadShot = headShot;
-        gotWallBanged = wallBanged;
 
         healthText.text = health.ToString();
 
-        if (health <= 0)
+        if (health <= 0 && !died)
         {
-            EnemySpawner.enemySpawner.SpawnEnemy(transform);
-            UpdateKillFeed();
+            died = true;
+
+            KillFeed.killFeed.UpdateKillFeed(enemyName, headShot, wallBanged);
+            EnemySpawner.enemySpawner.SpawnEnemy(transform, enemyName);
+
+            Destroy(gameObject);
         }
-    }
-
-    void UpdateKillFeed()
-    {
-        //Update the killfeed using symbols for headshots & wallbangs
-
-        Destroy(gameObject);
     }
 }

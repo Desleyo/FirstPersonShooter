@@ -13,17 +13,18 @@ public class EnemySpawner : MonoBehaviour
         enemySpawner = this;
     }
 
-    public void SpawnEnemy(Transform point)
+    public void SpawnEnemy(Transform point, string name)
     {
         Vector3 enemyPos = point.position;
-        StartCoroutine(SpawnNewEnemy(enemyPos, timeToSpawn));
+        StartCoroutine(SpawnNewEnemy(enemyPos, name, timeToSpawn));
     }
 
-    IEnumerator SpawnNewEnemy(Vector3 pos, float time)
+    IEnumerator SpawnNewEnemy(Vector3 pos, string name, float time)
     {
         yield return new WaitForSeconds(time);
 
         GameObject newEmeny = Instantiate(enemy);
         newEmeny.transform.position = pos;
+        newEmeny.GetComponent<EnemyHealth>().enemyName = name;
     }
 }
