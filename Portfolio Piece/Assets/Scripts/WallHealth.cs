@@ -5,6 +5,7 @@ using UnityEngine;
 public class WallHealth : MonoBehaviour
 {
     [SerializeField] GameObject wall;
+    [SerializeField] GameObject miniMapIcon;
     [SerializeField] GameObject brokenWall;
     [SerializeField] int maxHealth = 100;
     [SerializeField] float rebuildTime;
@@ -25,7 +26,7 @@ public class WallHealth : MonoBehaviour
             Transform[] decals = wall.GetComponentsInChildren<Transform>();
             foreach (Transform decal in decals)
             {
-                if(decal.transform != wall.transform)
+                if(decal.transform != wall.transform && decal.transform != miniMapIcon.transform)
                     Destroy(decal.gameObject);
             }
 
