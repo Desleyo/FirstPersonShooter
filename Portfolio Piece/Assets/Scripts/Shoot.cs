@@ -17,6 +17,8 @@ public class Shoot : MonoBehaviour
     [SerializeField] GameObject bulletHit;
     [SerializeField] Transform muzzle;
     [SerializeField] Transform bulletHitParent;
+    [SerializeField] LayerMask wallLayer;
+    [SerializeField] LayerMask enemyLayer;
 
     [Header("Damage values")]
     [SerializeField] int bodyshotDamage;
@@ -179,19 +181,18 @@ public class Shoot : MonoBehaviour
             }
         }
 
-        ShootRaycast(cam.transform.position, spreading, 0, false, null);
+        ShootRaycast(cam.transform.position, spreading, 0, false);
     }
 
-    void ShootRaycast(Vector3 point, Vector3 spread, int subtract, bool wallBanged, Collider wallBangedCollider)
+    void ShootRaycast(Vector3 point, Vector3 spread, int subtract, bool wallBanged)
     {
         subtractFromDamage += subtract;
 
         if (Physics.Raycast(point, cam.transform.TransformDirection(Vector3.forward + spread), out RaycastHit hit))
         {
-            if (wallBanged)
-                wallBangedCollider.enabled = true;
-
             string tag = hit.collider.tag;
+
+            CheckForWallbang(hit, spread);
 
             //Damage according to bodyShot values
             if (tag == "Body")
@@ -203,32 +204,35 @@ public class Shoot : MonoBehaviour
             else if (hit.collider.CompareTag("Wall"))
                 hit.collider.GetComponentInParent<WallHealth>().TakeDamage(bodyshotDamage - subtractFromDamage);
 
+            Debug.DrawRay(point, cam.transform.TransformDirection(Vector3.forward + spread), Color.blue, 10f);
+
             ImpactHole(tag, hit.point, hit);
-            CheckForWallbang(hit);
         }
         else
-        {
-            if (wallBanged)
-                wallBangedCollider.enabled = true;
-
             subtractFromDamage = 0;
-        }
     }
 
-    void CheckForWallbang(RaycastHit hit)
+    void CheckForWallbang(RaycastHit hit, Vector3 spread)
     {
         GameObject hitObject = hit.collider.gameObject;
 
         //Check if a new raycast needs to be fired from the hit point
-        if (hitObject.layer == 7)
-        {
-            //Disable collider for just a frame to let the raycast through
-            Collider hitCollider = hitObject.GetComponent<Collider>();
-            hitCollider.enabled = false;
+        if (hitObject.layer == 7 || hitObject.layer == 8)
+        {   
+            //Shoot a raycast to find the other side of the wallbangable object
+            Vector3 offset = hit.point + cam.transform.TransformDirection(new Vector3(0, 0, 7.5f));
 
-            //Shoot new raycast from the point you wallbanged
-            Vector3 noSpread = new Vector3(0, 0, 0);
-            ShootRaycast(hit.point, noSpread, wallbangDamageReducer, true, hitCollider);
+            Debug.Log(hitObject.layer);
+
+            if (Physics.Raycast(offset, cam.transform.TransformDirection(-Vector3.forward), out RaycastHit backwardsHit, hitObject.layer))
+            {
+                Debug.Log(backwardsHit.collider.gameObject.layer);
+
+                ImpactHole(backwardsHit.collider.tag, backwardsHit.point, backwardsHit);
+                ShootRaycast(backwardsHit.point, spread, wallbangDamageReducer, true);
+            }
+
+                Debug.DrawRay(offset, cam.transform.TransformDirection(-Vector3.forward), Color.red, 10f);
         }
         else
             subtractFromDamage = 0;

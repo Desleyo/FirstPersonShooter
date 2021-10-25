@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00233a3c15d6b674d95b3bbfada775e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyName: 
   healthText: {fileID: 564706785824879964}
   health: 100
 --- !u!1 &3517635262847656832
@@ -453,7 +454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1336476445098696509}
   - component: {fileID: 1767291453349873904}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HealthTextRotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -497,6 +498,10 @@ PrefabInstance:
     - target: {fileID: 5988879747117256836, guid: 9f1f25b9e9e1ba842a6916c7b3dac56e, type: 3}
       propertyPath: m_Name
       value: MiniMapIcon
+      objectReference: {fileID: 0}
+    - target: {fileID: 5988879747117256836, guid: 9f1f25b9e9e1ba842a6916c7b3dac56e, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5988879747117256838, guid: 9f1f25b9e9e1ba842a6916c7b3dac56e, type: 3}
       propertyPath: m_RootOrder

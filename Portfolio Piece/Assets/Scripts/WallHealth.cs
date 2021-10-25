@@ -42,7 +42,6 @@ public class WallHealth : MonoBehaviour
         yield return new WaitForSeconds(time);
 
         wall.SetActive(true);
-        wall.GetComponent<Collider>().enabled = true;
 
         Destroy(newBrokenWall);
 

@@ -970,6 +970,12 @@ MonoBehaviour:
   bulletHit: {fileID: 8285733933855847673, guid: bfd6dd9d85fa3e74dafb91baec28f161, type: 3}
   muzzle: {fileID: 1575644850}
   bulletHitParent: {fileID: 1660693812}
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 128
   bodyshotDamage: 31
   headshotDamage: 123
   wallbangDamageReducer: 13
@@ -3143,7 +3149,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 247
+    m_Bits: 503
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -4631,7 +4637,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 7b445f252fe7bdb43860e68bedaa987b, type: 2}
   m_TargetDisplay: 0
