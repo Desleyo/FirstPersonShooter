@@ -221,10 +221,11 @@ public class Shoot : MonoBehaviour
         {   
             //Shoot a raycast to find the other side of the wallbangable object
             Vector3 offset = hit.point + cam.transform.TransformDirection(new Vector3(0, 0, 7.5f));
+            int layerValue = hitObject.layer == 8 ? enemyLayer : wallLayer;
 
             Debug.Log(hitObject.layer);
 
-            if (Physics.Raycast(offset, cam.transform.TransformDirection(-Vector3.forward), out RaycastHit backwardsHit, 10f, ~hitObject.layer))
+            if (Physics.Raycast(offset, cam.transform.TransformDirection(-Vector3.forward), out RaycastHit backwardsHit, Mathf.Infinity, layerValue))
             {
                 Debug.Log(backwardsHit.collider.gameObject.layer);
 

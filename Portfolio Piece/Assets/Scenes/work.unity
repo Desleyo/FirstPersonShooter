@@ -972,10 +972,10 @@ MonoBehaviour:
   bulletHitParent: {fileID: 1660693812}
   wallLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 759
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 887
   bodyshotDamage: 31
   headshotDamage: 123
   wallbangDamageReducer: 13
