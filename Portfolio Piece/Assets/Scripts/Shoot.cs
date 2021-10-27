@@ -224,7 +224,7 @@ public class Shoot : MonoBehaviour
 
             Debug.Log(hitObject.layer);
 
-            if (Physics.Raycast(offset, cam.transform.TransformDirection(-Vector3.forward), out RaycastHit backwardsHit, hitObject.layer))
+            if (Physics.Raycast(offset, cam.transform.TransformDirection(-Vector3.forward), out RaycastHit backwardsHit, 10f, ~hitObject.layer))
             {
                 Debug.Log(backwardsHit.collider.gameObject.layer);
 
