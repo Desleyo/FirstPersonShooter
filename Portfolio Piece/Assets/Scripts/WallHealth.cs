@@ -23,18 +23,23 @@ public class WallHealth : MonoBehaviour
 
         if (health <= 0)
         {
-            Transform[] decals = wall.GetComponentsInChildren<Transform>();
-            foreach (Transform decal in decals)
-            {
-                if(decal.transform != wall.transform && decal.transform != miniMapIcon.transform)
-                    Destroy(decal.gameObject);
-            }
-
-            wall.SetActive(false);
-            newBrokenWall = Instantiate(brokenWall, transform);
-
-            StartCoroutine(RebuildWall(rebuildTime));
+            Invoke(nameof(DestroyWall), .01f);
         }
+    }
+
+    void DestroyWall()
+    {
+        Transform[] decals = wall.GetComponentsInChildren<Transform>();
+        foreach (Transform decal in decals)
+        {
+            if (decal.transform != wall.transform && decal.transform != miniMapIcon.transform)
+                Destroy(decal.gameObject);
+        }
+
+        wall.SetActive(false);
+        newBrokenWall = Instantiate(brokenWall, transform);
+
+        StartCoroutine(RebuildWall(rebuildTime));
     }
 
     IEnumerator RebuildWall(float time)

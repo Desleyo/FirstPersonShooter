@@ -24,7 +24,6 @@ public class Shoot : MonoBehaviour
     [SerializeField] int bodyshotDamage;
     [SerializeField] int headshotDamage;
     [SerializeField] int wallbangDamageReducer;
-    int subtractFromDamage;
     [SerializeField] float autoFireRate;
     [SerializeField] float semiFireRate;
 
@@ -64,6 +63,10 @@ public class Shoot : MonoBehaviour
     bool nextShot;
     float nextTimeToShoot;
     RaycastHit previousHit;
+
+    int subtractFromDamage;
+    int currentHeadshotDamage;
+    int currentBodyshotDamage;
 
     private void Update()
     {
@@ -181,32 +184,43 @@ public class Shoot : MonoBehaviour
             }
         }
 
-        ShootRaycast(cam.transform.position, spreading, 0, false);
+        ShootRaycast(cam.transform.position, new Vector3(0, 0, 0), spreading, false);
     }
 
-    void ShootRaycast(Vector3 point, Vector3 spread, int subtract, bool wallBanged)
+    void ShootRaycast(Vector3 point, Vector3 previousPoint, Vector3 spread, bool wallBanged)
     {
-        subtractFromDamage += subtract;
+        if (wallBanged)
+        {
+            subtractFromDamage += Mathf.RoundToInt(wallbangDamageReducer * Vector3.Distance(point, previousPoint));
+        }
+        else
+        {
+            currentHeadshotDamage = headshotDamage;
+            currentBodyshotDamage = bodyshotDamage;
+        }
 
         if (Physics.Raycast(point, cam.transform.TransformDirection(Vector3.forward + spread), out RaycastHit hit))
         {
             string tag = hit.collider.tag;
 
-            CheckForWallbang(hit, spread);
+            //Update damage values 
+            currentHeadshotDamage -= subtractFromDamage;
+            currentBodyshotDamage -= subtractFromDamage;
 
             //Damage according to bodyShot values
-            if (tag == "Body")
-                hit.collider.GetComponent<EnemyHealth>().TakeDamage(bodyshotDamage - subtractFromDamage, false, wallBanged);
+            if (tag == "Body" && bodyshotDamage - subtractFromDamage > 0)
+                hit.collider.GetComponent<EnemyHealth>().TakeDamage(currentBodyshotDamage, false, wallBanged);
             //Damage according to headShot values
-            else if (tag == "Head")
-                hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(headshotDamage - subtractFromDamage, true, wallBanged);
+            else if (tag == "Head" && headshotDamage - subtractFromDamage > 0)
+                hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(currentHeadshotDamage, true, wallBanged);
             //Damage the wall
-            else if (hit.collider.CompareTag("Wall"))
-                hit.collider.GetComponentInParent<WallHealth>().TakeDamage(bodyshotDamage - subtractFromDamage);
+            else if (hit.collider.CompareTag("Wall") && bodyshotDamage - subtractFromDamage > 0)
+                hit.collider.GetComponentInParent<WallHealth>().TakeDamage(currentBodyshotDamage);
 
             Debug.DrawRay(point, cam.transform.TransformDirection(Vector3.forward + spread), Color.blue, 10f);
 
             ImpactHole(tag, hit.point, hit);
+            CheckForWallbang(hit, spread);
         }
         else
             subtractFromDamage = 0;
@@ -223,14 +237,10 @@ public class Shoot : MonoBehaviour
             Vector3 offset = hit.point + cam.transform.TransformDirection(new Vector3(0, 0, 7.5f));
             int layerValue = hitObject.layer == 8 ? enemyLayer : wallLayer;
 
-            Debug.Log(hitObject.layer);
-
             if (Physics.Raycast(offset, cam.transform.TransformDirection(-Vector3.forward), out RaycastHit backwardsHit, Mathf.Infinity, layerValue))
             {
-                Debug.Log(backwardsHit.collider.gameObject.layer);
-
                 ImpactHole(backwardsHit.collider.tag, backwardsHit.point, backwardsHit);
-                ShootRaycast(backwardsHit.point, spread, wallbangDamageReducer, true);
+                ShootRaycast(backwardsHit.point, hit.point, spread, true);
             }
 
                 Debug.DrawRay(offset, cam.transform.TransformDirection(-Vector3.forward), Color.red, 10f);
@@ -244,7 +254,7 @@ public class Shoot : MonoBehaviour
         int health = tag == "Wall" ? hit.collider.GetComponentInParent<WallHealth>().health : 100;
 
         //Show impact hole
-        if (tag != "Body" && tag != "Head" && health > 0)
+        if (tag != "Body" && tag != "Head" && tag != "Player" && health > 0)
         {
             Transform parent = tag == "Ground" || tag == "Untagged" ? bulletHitParent : hit.collider.gameObject.transform;
             var hitEffect = Instantiate(bulletHit, point, Quaternion.identity, parent);
