@@ -2495,7 +2495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98ce3af89c73f74499542e5da7cf5243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 3517635261207902798, guid: bda6c7beee66b024e8d406ea27b73d8d, type: 3}
+  enemyPrefab: {fileID: 3517635261207902798, guid: bda6c7beee66b024e8d406ea27b73d8d, type: 3}
   timeToSpawn: 3
 --- !u!4 &893380456
 Transform:
@@ -5056,9 +5056,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killFeedPrefab: {fileID: 1114691598339942198, guid: 18e7790e6018a4245a299ccbb3776bc6, type: 3}
-  killSymbol: ' >'
-  hsSymbol: ' X'
-  wbSymbol: ' /'
+  killSymbol: '>'
+  headShotSymbol: ' X'
+  wallBangSymbol: ' /'
   waitBeforeFade: 3
   fadeOutSpeed: 2
 --- !u!1 &2069707892
@@ -5302,18 +5302,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 478619778}
     m_Modifications:
-    - target: {fileID: 4082162714898018823, guid: 86c272018cb2d71489b82fd09a4f071f, type: 3}
-      propertyPath: m_Convex
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5149165488130851488, guid: 86c272018cb2d71489b82fd09a4f071f, type: 3}
-      propertyPath: m_TagString
-      value: Wall
-      objectReference: {fileID: 0}
-    - target: {fileID: 5149165488130851491, guid: 86c272018cb2d71489b82fd09a4f071f, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5149165488610260562, guid: 86c272018cb2d71489b82fd09a4f071f, type: 3}
       propertyPath: m_Name
       value: wallParent

@@ -142,8 +142,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wall: {fileID: 5149165488130851488}
-  miniMapIcon: {fileID: 3787954891353269145}
   brokenWall: {fileID: 1266228163980030396, guid: 6c11e65d4afa6cd46983ab5a70b67a95, type: 3}
+  miniMapIcon: {fileID: 3787954891353269145}
   maxHealth: 100
   rebuildTime: 5
   health: 0

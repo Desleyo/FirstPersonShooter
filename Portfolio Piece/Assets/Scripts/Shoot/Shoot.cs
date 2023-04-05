@@ -216,7 +216,7 @@ public class Shoot : MonoBehaviour
             else if (hit.collider.CompareTag("Wall") && bodyshotDamage - subtractFromDamage > 0)
                 hit.collider.GetComponentInParent<WallHealth>().TakeDamage(currentBodyshotDamage);
 
-            Debug.DrawRay(point, cam.transform.TransformDirection(Vector3.forward + spread), Color.blue, 10f);
+            //Debug.DrawRay(point, cam.transform.TransformDirection(Vector3.forward + spread), Color.blue, 10f);
 
             ImpactHole(tag, hit.point, hit);
             CheckForWallbang(hit, spread);

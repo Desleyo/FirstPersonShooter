@@ -1,16 +1,17 @@
 using UnityEngine;
 
+//This script forces the GameObject this scripts is attached to, to always look at the main camera in the scene
 public class LookatPlayer : MonoBehaviour
 {
-    Transform cam;
+    private Transform cameraTransform;
 
-    void Start()
+    private void Start()
     {
-        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        cameraTransform = Camera.main.transform;
     }
 
-    void Update()
+    private void LateUpdate()
     {
-        transform.LookAt(cam);
+        transform.LookAt(cameraTransform);
     }
 }

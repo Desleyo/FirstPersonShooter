@@ -1,34 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : MonoBehaviour, IDamagable
 {
-    public string enemyName;
+    public string enemyName; //We'll access this in the enemySpawner
 
-    [Space, SerializeField] TextMeshProUGUI healthText;
-    [SerializeField] int health = 100;
-    bool died;
+    [Space]
+    [SerializeField] private TextMeshProUGUI healthText;
+    [SerializeField] private int health = 100;
+    
+    private bool hasDied = false;
 
     private void Start()
     {
         healthText.text = health.ToString();
-        died = false;
     }
 
-    public void TakeDamage(int damage, bool headShot, bool wallBanged)
+    //Call this function to deal damage
+    public void TakeDamage(int damage, bool headShot = false, bool wallBanged = false)
     {
         health -= damage;
 
         healthText.text = health.ToString();
 
-        if (health <= 0 && !died)
+        if (health <= 0 && !hasDied)
         {
-            died = true;
+            hasDied = true;
 
-            KillFeed.killFeed.UpdateKillFeed(enemyName, headShot, wallBanged);
-            EnemySpawner.enemySpawner.SpawnEnemy(transform, enemyName);
+            KillFeed.instance.UpdateKillFeed(enemyName, headShot, wallBanged);
+
+            EnemySpawner.instance.SpawnEnemy(transform, enemyName);
 
             Destroy(gameObject);
         }

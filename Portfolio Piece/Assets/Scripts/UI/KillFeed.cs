@@ -1,44 +1,52 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class KillFeed : MonoBehaviour
 {
-    public static KillFeed killFeed;
-    [SerializeField] GameObject killFeedPrefab;
-    [SerializeField] string killSymbol;
-    [SerializeField] string hsSymbol;
-    [SerializeField] string wbSymbol;
+    public static KillFeed instance;
 
-    [Space, SerializeField] float waitBeforeFade;
-    [SerializeField] float fadeOutSpeed;
+    [SerializeField] private GameObject killFeedPrefab;
+    [SerializeField] private string killSymbol;
+    [SerializeField] private string headShotSymbol;
+    [SerializeField] private string wallBangSymbol;
+
+    [Space]
+    [SerializeField] private float waitBeforeFade;
+    [SerializeField] private float fadeOutSpeed;
 
     private void Awake()
     {
-        killFeed = this;
+        instance = this;
     }
 
+    //Call this function to update the killFeed when a kill is made
     public void UpdateKillFeed(string enemyName, bool gotHeadShot, bool gotWallBanged)
     {
         //Setup kill symbols
         string symbols = killSymbol;
         if (gotWallBanged)
-            symbols += wbSymbol;
+        {
+            symbols += wallBangSymbol;
+        }
         if (gotHeadShot)
-            symbols += hsSymbol;
+        {
+            symbols += headShotSymbol;
+        }
 
         //Setup enemy name
-        string dummyName = " <color=red>" + enemyName + "</color>";
+        string dummyName = $"<color=red> {enemyName} </color>";
 
-        GameObject killFeedInstance = Instantiate(killFeedPrefab, transform);
-        TextMeshProUGUI killText = killFeedInstance.GetComponentInChildren<TextMeshProUGUI>();
-        killText.text = "<color=blue> Player </color>" + symbols + dummyName;
+        //Create a killFeed message
+        GameObject killFeedMessage = Instantiate(killFeedPrefab, transform);
+        TextMeshProUGUI killText = killFeedMessage.GetComponentInChildren<TextMeshProUGUI>();
+        killText.text = $"<color=blue> Player </color> {symbols} {dummyName}";
 
-        StartCoroutine(FadeOutKillText(killFeedInstance, waitBeforeFade));
+        StartCoroutine(FadeOutKillText(killFeedMessage, waitBeforeFade));
     }
 
-    IEnumerator FadeOutKillText(GameObject killFeedInstance, float time)
+    //Call this enumerator to fade out the killfeed message over time
+    private IEnumerator FadeOutKillText(GameObject killFeedInstance, float time)
     {
         yield return new WaitForSeconds(time);
 
