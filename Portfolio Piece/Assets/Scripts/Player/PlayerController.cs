@@ -1,52 +1,52 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] GameObject playerCam;
-    [SerializeField] Rigidbody rb;
-    [SerializeField] Shoot shoot;
+    [SerializeField] private GameObject playerCam;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Weapon weapon;
 
-    [Space, SerializeField] float sensitivity;
-    float xRotation;
-    float yRotation;
-
-    //Look variables
-    [SerializeField] float camOffset = .65f;
+    [Space]
+    [SerializeField] private float sensitivity;
+    [SerializeField] private float camOffset = .65f;
+    private float xRotation;
+    private float yRotation;
 
     [Header("Move & Crouch variables")]
-    [SerializeField] float moveSpeed;
+    [SerializeField] private float moveSpeed;
     [HideInInspector] public bool isMoving;
-    float horizontal, vertical;
+    private float horizontal;
+    private float vertical;
 
-    [SerializeField] float crouchMoveSpeed;
-    [SerializeField] float crouchSpeed;
-    [SerializeField] float crouchCooldown = .5f;
+    [SerializeField] private float crouchMoveSpeed;
+    [SerializeField] private float crouchSpeed;
+    [SerializeField] private float crouchCooldown = .5f;
     [HideInInspector] public bool isCrouching = false;
-    bool canCrouch = true;
+    private bool canCrouch = true;
 
-    //Jump variables
-    [Space, SerializeField] float jumpForce;
-    [SerializeField] float normalSphereRadius;
-    [SerializeField] float crouchingSphereRadius;
-    Collider[] colliders;
+    [Header("Jump variables")]
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float normalSphereRadius;
+    [SerializeField] private float crouchingSphereRadius;
 
     [Header("Standing & Crouch values")]
-    [SerializeField] float crouchHeight = .5f;
-    [SerializeField] float crouchPosY = .55f;
-    [SerializeField] float standingHeight = 1;
-    [SerializeField] float standingPosY = 1.01f;
+    [SerializeField] private float standingHeight = 1;
+    [SerializeField] private float standingPosY = 1.01f;
+    [SerializeField] private float crouchHeight = .5f;
+    [SerializeField] private float crouchPosY = .55f;
 
     [Header("Recoil variables")]
-    [SerializeField] float recoilSpeed;
-    [SerializeField] float recoilClampX;
-    [SerializeField] float recoilClampY;
-    [SerializeField] float stopRecoilThreshold = .2f;
-    float recoilMaxX, recoilMaxY;
-    float recoilValueX, recoilValueY;
-    bool canIncreaseRecoil;
+    [SerializeField] private float recoilSpeed;
+    [SerializeField] private float recoilClampX;
+    [SerializeField] private float recoilClampY;
+    [SerializeField] private float stopRecoilThreshold = .2f;
+    private float recoilMaxX;
+    private float recoilMaxY;
+    private float recoilValueX;
+    private float recoilValueY;
+    private bool canIncreaseRecoil;
 
     private void Start()
     {
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
         Move();
     }
 
-    void Look()
+    private void Look()
     {
         float mouseX = Input.GetAxisRaw("Mouse X") * sensitivity;
         float mouseY = Input.GetAxisRaw("Mouse Y") * sensitivity;
@@ -93,46 +93,36 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(WaitToDecrease(.1f));
     }
 
-    void IncreaseRecoil()
+    private void IncreaseRecoil()
     {
-        if (canIncreaseRecoil)
-        {
-            recoilValueX = Mathf.Lerp(recoilValueX, recoilMaxX, 1 * Time.deltaTime * recoilSpeed);
-            recoilValueY = Mathf.Lerp(recoilValueY, recoilMaxY, 1 * Time.deltaTime * recoilSpeed);
-        }
-        else
-        {
-            recoilValueX = Mathf.Lerp(recoilValueX, 0, 1 * Time.deltaTime * recoilSpeed);
-            recoilValueY = Mathf.Lerp(recoilValueY, 0, 1 * Time.deltaTime * recoilSpeed);
-        }
+        float recoilTargetX = canIncreaseRecoil ? recoilMaxX : 0;
+        float recoilTargetY = canIncreaseRecoil ? recoilMaxY : 0;
 
-        if (recoilValueX < stopRecoilThreshold && recoilValueX > -stopRecoilThreshold && recoilValueY < stopRecoilThreshold && !canIncreaseRecoil)
-        {
-            recoilMaxX = 0;
-            recoilMaxY = 0;
-        }
+        recoilValueX = Mathf.Lerp(recoilValueX, recoilTargetX, 1 * Time.deltaTime * recoilSpeed);
+        recoilValueY = Mathf.Lerp(recoilValueY, recoilTargetY, 1 * Time.deltaTime * recoilSpeed);
 
-        if (recoilValueY - stopRecoilThreshold < 0 && !canIncreaseRecoil)
+        if (!canIncreaseRecoil)
         {
-            recoilValueX = 0;
-            recoilValueY = 0;
+            if (recoilValueY - stopRecoilThreshold < 0)
+            {
+                recoilMaxX = 0;
+                recoilMaxY = 0;
+            }
         }
-
-        if (canIncreaseRecoil)
+        else if (!Input.GetButton("Fire1") || weapon.currentBulletCount == 0)
         {
-            if (!shoot.fullAuto && !Input.GetButtonDown("Fire1") || !Input.GetButton("Fire1") || shoot.currentBulletCount == 0)
-                StartCoroutine(WaitToDecrease(.1f));
+            StartCoroutine(WaitToDecrease(.1f));
         }
     }
 
-    IEnumerator WaitToDecrease(float time)
+    private IEnumerator WaitToDecrease(float time)
     {
         yield return new WaitForSeconds(time);
 
         canIncreaseRecoil = false;
     }
 
-    void Move()
+    private void Move()
     {
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
@@ -146,7 +136,7 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(transform.position + transform.TransformDirection(dir) * speed * Time.deltaTime);
     }
 
-    void Jump()
+    private void Jump()
     {
         if (Input.GetButtonDown("Jump") && CanJump())
         {
@@ -158,23 +148,23 @@ public class PlayerController : MonoBehaviour
     public bool CanJump()
     {
         bool canJump = false;
+
         float finalRadius = isCrouching ? crouchingSphereRadius : normalSphereRadius;
-        colliders = Physics.OverlapSphere(transform.position, finalRadius);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, finalRadius);
         foreach(Collider collider in colliders)
         {
             if (collider.CompareTag("Ground") || collider.CompareTag("BrokenWall"))
+            {
                 canJump = true;
+            }
         }
 
         return canJump;
     }
 
-    void Crouch()
+    private void Crouch()
     {
-        if (Input.GetButton("Crouch"))
-            isCrouching = true;
-        else if (Input.GetButtonUp("Crouch"))
-            isCrouching = false;
+        isCrouching = Input.GetButton("Crouch");
 
         //Make player crouch
         if (canCrouch && isCrouching && transform.localScale.y > crouchHeight)
@@ -183,18 +173,22 @@ public class PlayerController : MonoBehaviour
 
             //Make sure the player will be exactly at crouchHeight when nearing it
             if (transform.localScale.y <= crouchHeight + .05f)
+            {
                 transform.localScale = new Vector3(1, crouchHeight, 1);
+            }
 
             //If the player isn't airborne put player on the ground
             if (transform.position.y <= 1.1f)
+            {
                 transform.position = new Vector3(transform.position.x, crouchPosY, transform.position.z);
+            }
         }
         //Make player stand up
         else if (!isCrouching && transform.localScale.y < standingHeight)
         {
             transform.localScale = new Vector3(1, transform.localScale.y + 1 * crouchSpeed, 1);
 
-            //Make sure the player will be exactly at standinHeight when nearing it
+            //Make sure the player will be exactly at standingHeight when nearing it
             if (transform.localScale.y >= standingHeight - .05f)
             {
                 transform.localScale = new Vector3(1, standingHeight, 1);
@@ -205,11 +199,13 @@ public class PlayerController : MonoBehaviour
 
             //If player isn't airborne put player on ground
             if (CanJump())
+            {
                 transform.position = new Vector3(transform.position.x, standingPosY, transform.position.z);
+            }
         }
     }
 
-    IEnumerator WaitForCrouchCooldown()
+    private IEnumerator WaitForCrouchCooldown()
     {
         yield return new WaitForSeconds(crouchCooldown);
 

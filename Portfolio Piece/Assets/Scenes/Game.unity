@@ -982,9 +982,9 @@ MonoBehaviour:
   autoFireRate: 7.5
   semiFireRate: 4
   bulletCountText: {fileID: 174939207}
-  currentBulletCount: 30
   maxBulletCount: 30
   reloadTime: 3.2
+  currentBulletCount: 30
   isReloading: 0
   spreadStatusText: {fileID: 2109800843}
   recoilSpreadCorrection: 100
@@ -1197,7 +1197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCam: {fileID: 1275869948}
   rb: {fileID: 286761770}
-  shoot: {fileID: 186656928}
+  weapon: {fileID: 186656928}
   sensitivity: 0.65
   camOffset: 0.65
   moveSpeed: 5
@@ -1209,10 +1209,10 @@ MonoBehaviour:
   jumpForce: 1
   normalSphereRadius: 1.01
   crouchingSphereRadius: 0.71
-  crouchHeight: 0.7
-  crouchPosY: 0.55
   standingHeight: 1
   standingPosY: 1.01
+  crouchHeight: 0.7
+  crouchPosY: 0.55
   recoilSpeed: 4
   recoilClampX: 2.5
   recoilClampY: 5
@@ -3169,7 +3169,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 503
+    m_Bits: 3575
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

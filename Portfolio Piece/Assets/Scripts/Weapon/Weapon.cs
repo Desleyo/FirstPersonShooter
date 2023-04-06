@@ -2,102 +2,78 @@
 using UnityEngine;
 using TMPro;
 
-public class Shoot : MonoBehaviour
+public class Weapon : MonoBehaviour
 {
     [Header("Main references")]
-    [SerializeField] PlayerController playerControls;
-    [SerializeField] Camera cam;
-    [SerializeField] Animator animator;
-    [SerializeField] Animator reload;
-    [SerializeField] GameObject armMesh;
+    [SerializeField] private PlayerController playerControls;
+    [SerializeField] private Camera cam;
+    [SerializeField] private Animator animator;
+    [SerializeField] private Animator reload;
+    [SerializeField] private GameObject armMesh;
 
     [Header("Flash & Bullet hole references")]
-    [SerializeField] GameObject flash;
-    [SerializeField] GameObject bulletHit;
-    [SerializeField] Transform muzzle;
-    [SerializeField] Transform bulletHitParent;
-    [SerializeField] LayerMask wallLayer;
-    [SerializeField] LayerMask enemyLayer;
+    [SerializeField] private GameObject flash;
+    [SerializeField] private GameObject bulletHit;
+    [SerializeField] private Transform muzzle;
+    [SerializeField] private Transform bulletHitParent;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private LayerMask enemyLayer;
 
     [Header("Damage values")]
-    [SerializeField] int bodyshotDamage;
-    [SerializeField] int headshotDamage;
-    [SerializeField] int wallbangDamageReducer;
-    [SerializeField] float autoFireRate;
-    [SerializeField] float semiFireRate;
+    [SerializeField] private int bodyshotDamage;
+    [SerializeField] private int headshotDamage;
+    [SerializeField] private int wallbangDamageReducer;
+    [SerializeField] private float autoFireRate;
+    [SerializeField] private float semiFireRate;
 
     [Header("Ammo & Reload variables")]
-    [SerializeField] TextMeshProUGUI bulletCountText;
-    [SerializeField] public int currentBulletCount;
-    [SerializeField] int maxBulletCount;
-    [SerializeField] float reloadTime;
+    [SerializeField] private TextMeshProUGUI bulletCountText;
+    [SerializeField] private int maxBulletCount;
+    [SerializeField] private float reloadTime;
+    [HideInInspector] public int currentBulletCount;
     [HideInInspector] public bool isReloading;
 
     [Header("Recoil & Spread variables")]
-    [SerializeField] TextMeshProUGUI spreadStatusText;
-    [SerializeField] float recoilSpreadCorrection;
-    [SerializeField] float[] spreadPatternX;
-    [SerializeField] float[] spreadPatternY;
-    [SerializeField] float normalSpread;
-    [SerializeField] float movingSpread;
-    [SerializeField] float jumpingSpread;
-    bool spreadEnabled = true;
-    Vector3 spreading;
-    int patternIndex;
+    [SerializeField] private TextMeshProUGUI spreadStatusText;
+    [SerializeField] private float recoilSpreadCorrection;
+    [SerializeField] private float[] spreadPatternX;
+    [SerializeField] private float[] spreadPatternY;
+    [SerializeField] private float normalSpread;
+    [SerializeField] private float movingSpread;
+    [SerializeField] private float jumpingSpread;
+    private bool spreadEnabled = true;
+    private int patternIndex;
 
-    [Space, SerializeField] float recoilValueX;
-    [SerializeField] float recoilValueY;
-    [SerializeField] float autoRecoilResetTime;
-    [SerializeField] float semiRecoilResetTime;
-    float recoilResetTime;
+    [Space]
+    [SerializeField] private float recoilValueX;
+    [SerializeField] private float recoilValueY;
+    [SerializeField] private float autoRecoilResetTime;
+    [SerializeField] private float semiRecoilResetTime;
+    private float recoilResetTime;
 
     [Header("FireMode variables")]
-    [SerializeField] TextMeshProUGUI fireModeText;
-    [SerializeField] float fireModeCooldown;
-    bool canSwitchFireMode = true;
+    [SerializeField] private TextMeshProUGUI fireModeText;
+    [SerializeField] private float fireModeCooldown;
+    private bool canSwitchFireMode = true;
 
-    //Some private variables
     [HideInInspector] public bool fullAuto = true;
-    bool isShooting;
-    bool nextShot;
-    float nextTimeToShoot;
-    RaycastHit previousHit;
+    private bool isShooting;
+    private bool nextShot;
+    private float nextTimeToShoot;
+    private RaycastHit previousHit;
 
-    int subtractFromDamage;
-    int currentHeadshotDamage;
-    int currentBodyshotDamage;
+    private int subtractFromDamage;
+    private int currentHeadshotDamage;
+    private int currentBodyshotDamage;
 
     private void Update()
     {
         CheckInput();
-
-        if (currentBulletCount > 0 && !isReloading && nextTimeToShoot < Time.time)
-        {
-            if (isShooting || nextShot)
-            {
-                currentBulletCount--;
-                patternIndex++;
-
-                SetupRaycast();
-
-                float fireRate = fullAuto ? autoFireRate : semiFireRate;
-                nextTimeToShoot = Time.time + 1f / fireRate;
-                nextShot = false;
-            }
-        }
-
-        if(recoilResetTime > 0)
-        {
-            recoilResetTime -= Time.deltaTime;
-            if (recoilResetTime <= 0)
-            {
-                patternIndex = 0;
-                recoilResetTime = Mathf.Infinity;
-            }
-        }
+        CheckForNextShot();
+        CheckForRecoilReset();
     }
 
-    void CheckInput()
+    private void CheckInput()
     {
         //Check if the player wants to fire a bullet
         isShooting = fullAuto ? Input.GetButton("Fire1") : Input.GetButtonDown("Fire1");
@@ -115,7 +91,9 @@ public class Shoot : MonoBehaviour
 
         //Display the bulletcount on screen
         if (!isReloading)
+        {
             bulletCountText.text = currentBulletCount + "|" + maxBulletCount;
+        }
 
         //Check if the player wants to switch firemodes
         if (Input.GetButton("FireMode") && canSwitchFireMode && !isShooting && !isReloading)
@@ -135,13 +113,51 @@ public class Shoot : MonoBehaviour
         }
 
         //check for input in between chambering rounds
-        if (nextTimeToShoot > Time.time && Input.GetButtonDown("Fire1"))
-            nextShot = true;
-        else if (nextTimeToShoot > Time.time && Input.GetButtonUp("Fire1"))
-            nextShot = false;
+        if(nextTimeToShoot > Time.time)
+        {
+            if (Input.GetButtonDown("Fire1"))
+            {
+                nextShot = true;
+            }
+            else if (Input.GetButtonUp("Fire1"))
+            {
+                nextShot = false;
+            }
+        }
     }
 
-    public void SetupRaycast()
+    private void CheckForNextShot()
+    {
+        if (currentBulletCount > 0 && !isReloading && nextTimeToShoot < Time.time)
+        {
+            if (isShooting || nextShot)
+            {
+                currentBulletCount--;
+                patternIndex++;
+
+                SetupRaycast();
+
+                float fireRate = fullAuto ? autoFireRate : semiFireRate;
+                nextTimeToShoot = Time.time + 1f / fireRate;
+                nextShot = false;
+            }
+        }
+    }
+
+    private void CheckForRecoilReset()
+    {
+        if (recoilResetTime > 0)
+        {
+            recoilResetTime -= Time.deltaTime;
+            if (recoilResetTime <= 0)
+            {
+                patternIndex = 0;
+                recoilResetTime = Mathf.Infinity;
+            }
+        }
+    }
+
+    private void SetupRaycast()
     {
         animator.SetTrigger("Shoot");
 
@@ -154,20 +170,25 @@ public class Shoot : MonoBehaviour
         recoilResetTime = fullAuto ? autoRecoilResetTime : semiRecoilResetTime;
 
         //Add spread if enabled, but make sure first bullet accuracy is perserved
-        spreading = new Vector3(0, 0, 0);
+        Vector3 spreading = new Vector3(0, 0, 0);
         if (spreadEnabled)
         {
             if(patternIndex != 1 || playerControls.isMoving || !playerControls.CanJump())
             {
                 //Check how much spread is needed according to the movement of the player
                 float spread = !playerControls.CanJump() ? jumpingSpread : playerControls.isMoving ? movingSpread : normalSpread;
+
                 if (playerControls.isCrouching)
+                {
                     spread /= 2;
+                }
 
                 float randomX;
                 float randomY;
                 if (!fullAuto)
+                {
                     randomX = randomY = Random.Range(-spread, spread);
+                }
                 else
                 {
                     if (spread == normalSpread || spread == normalSpread / 2)
@@ -176,7 +197,9 @@ public class Shoot : MonoBehaviour
                         randomY = spreadPatternY[patternIndex - 1];
                     }
                     else
+                    {
                         randomX = randomY  = Random.Range(-spread, spread);
+                    }
                 }
 
                 spreading = new Vector3(randomX / recoilSpreadCorrection, randomY / recoilSpreadCorrection, 0);
@@ -186,7 +209,7 @@ public class Shoot : MonoBehaviour
         ShootRaycast(cam.transform.position, new Vector3(0, 0, 0), spreading, false);
     }
 
-    void ShootRaycast(Vector3 point, Vector3 previousPoint, Vector3 spread, bool wallBanged)
+    private void ShootRaycast(Vector3 point, Vector3 previousPoint, Vector3 spread, bool wallBanged)
     {
         if (wallBanged)
         {
@@ -206,15 +229,27 @@ public class Shoot : MonoBehaviour
             currentHeadshotDamage -= subtractFromDamage;
             currentBodyshotDamage -= subtractFromDamage;
 
+            IDamagable damagable = hit.collider.GetComponent<IDamagable>();
+            if(damagable == null)
+            {
+                damagable = hit.collider.GetComponentInParent<IDamagable>();
+            }
+
             //Damage according to bodyShot values
             if (tag == "Body" && bodyshotDamage - subtractFromDamage > 0)
-                hit.collider.GetComponent<EnemyHealth>().TakeDamage(currentBodyshotDamage, false, wallBanged);
+            {
+                damagable.TakeDamage(currentBodyshotDamage, false, wallBanged);
+            }
             //Damage according to headShot values
             else if (tag == "Head" && headshotDamage - subtractFromDamage > 0)
-                hit.collider.GetComponentInParent<EnemyHealth>().TakeDamage(currentHeadshotDamage, true, wallBanged);
+            {
+                damagable.TakeDamage(currentHeadshotDamage, true, wallBanged);
+            }
             //Damage the wall
             else if (hit.collider.CompareTag("Wall") && bodyshotDamage - subtractFromDamage > 0)
-                hit.collider.GetComponentInParent<WallHealth>().TakeDamage(currentBodyshotDamage);
+            {
+                damagable.TakeDamage(currentBodyshotDamage);
+            }
 
             //Debug.DrawRay(point, cam.transform.TransformDirection(Vector3.forward + spread), Color.blue, 10f);
 
@@ -222,10 +257,12 @@ public class Shoot : MonoBehaviour
             CheckForWallbang(hit, spread);
         }
         else
+        {
             subtractFromDamage = 0;
+        }
     }
 
-    void CheckForWallbang(RaycastHit hit, Vector3 spread)
+    private void CheckForWallbang(RaycastHit hit, Vector3 spread)
     {
         GameObject hitObject = hit.collider.gameObject;
 
@@ -245,10 +282,12 @@ public class Shoot : MonoBehaviour
                 Debug.DrawRay(offset, cam.transform.TransformDirection(-Vector3.forward), Color.red, 10f);
         }
         else
+        {
             subtractFromDamage = 0;
+        }
     }
 
-    void ImpactHole(string tag, Vector3 point, RaycastHit hit)
+    private void ImpactHole(string tag, Vector3 point, RaycastHit hit)
     {
         int health = tag == "Wall" ? hit.collider.GetComponentInParent<WallHealth>().health : 100;
 
@@ -263,22 +302,24 @@ public class Shoot : MonoBehaviour
         }
     }
 
-    void InstantiateFlash()
+    private void InstantiateFlash()
     {
         var effect = Instantiate(flash, muzzle.position, muzzle.rotation);
         effect.GetComponent<Transform>().SetParent(muzzle);
         StartCoroutine(DestroyEffect(.1f, effect));
     }
 
-    IEnumerator DestroyEffect(float time, GameObject effect)
+    private IEnumerator DestroyEffect(float time, GameObject effect)
     {
         yield return new WaitForSeconds(time);
 
         if(effect)
+        {
             Destroy(effect);
+        }
     }
 
-    IEnumerator Reload(float time)
+    private IEnumerator Reload(float time)
     {
         yield return new WaitForSeconds(time);
 
@@ -295,7 +336,7 @@ public class Shoot : MonoBehaviour
         StopCoroutine(nameof(Reload));
     }
 
-    IEnumerator FireModeCooldown(float cooldown)
+    private IEnumerator FireModeCooldown(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
 
