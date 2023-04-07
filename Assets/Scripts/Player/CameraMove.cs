@@ -1,0 +1,38 @@
+using UnityEngine;
+
+public class CameraMove : MonoBehaviour
+{
+    [SerializeField] private float sensitivity;
+    [SerializeField] private float clampRotation;
+    [SerializeField] Transform playerOrientation;
+
+    private float xRotation;
+    private float yRotation;
+
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void LateUpdate()
+    {
+        Look();
+    }
+
+    private void Look()
+    {
+        float mouseX = Input.GetAxisRaw("Mouse X") * sensitivity;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * sensitivity;
+
+        xRotation -= mouseY;
+        yRotation += mouseX;
+
+        //Clamp xRotation so the player can't go upside down
+        xRotation = Mathf.Clamp(xRotation, -clampRotation, clampRotation);
+
+        //Set the rotation of the camera and the orientation object of the player
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        playerOrientation.rotation = Quaternion.Euler(0, yRotation, 0);
+    }
+}
