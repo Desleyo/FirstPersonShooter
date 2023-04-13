@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CameraMove : MonoBehaviour
+public class CameraMovement : MonoBehaviour
 {
     [SerializeField] private float sensitivity;
     [SerializeField] private float clampRotation;

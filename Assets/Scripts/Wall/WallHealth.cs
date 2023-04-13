@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class WallHealth : MonoBehaviour, IDamagable
+public class WallHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private GameObject wall;
     [SerializeField] private GameObject brokenWall;

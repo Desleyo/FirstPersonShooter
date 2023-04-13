@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class EnemyHealth : MonoBehaviour, IDamagable
+public class EnemyHealth : MonoBehaviour, IDamageable
 {
     public string enemyName; //We'll access this in the enemySpawner
 
