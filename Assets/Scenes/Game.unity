@@ -436,8 +436,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e3709a799d1fd44382c779ae9c113b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 1275869950}
+  playerCamera: {fileID: 1275869948}
+  cameraMovement: {fileID: 1275869952}
   weapon: {fileID: 623302078}
+  muzzleFlashPrefab: {fileID: 769231850312162702, guid: a1a2e7349e9555e40b9b772793b2586c, type: 3}
   decalPrefab: {fileID: 8285733933855847673, guid: bfd6dd9d85fa3e74dafb91baec28f161, type: 3}
   decalParent: {fileID: 1660693812}
   ammoText: {fileID: 174939207}
@@ -713,10 +715,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1275869949}
     m_Modifications:
-    - target: {fileID: 2563745831790295205, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6320300690958116219, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -735,7 +733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6320300690958116219, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.99965733
       objectReference: {fileID: 0}
     - target: {fileID: 6320300690958116219, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
       propertyPath: m_LocalRotation.x
@@ -743,7 +741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6320300690958116219, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.026176924
       objectReference: {fileID: 0}
     - target: {fileID: 6320300690958116219, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
       propertyPath: m_LocalRotation.z
@@ -755,7 +753,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6320300690958116219, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 6320300690958116219, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -2752,6 +2750,7 @@ MonoBehaviour:
   sensitivity: 0.75
   clampRotation: 60
   playerOrientation: {fileID: 490043886}
+  currentRecoil: {x: 0, y: 0, z: 0}
 --- !u!1001 &1315980730
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3587,7 +3586,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0

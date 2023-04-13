@@ -692,6 +692,7 @@ Transform:
   - {fileID: 3448801650977621434}
   - {fileID: 5916974983566823961}
   - {fileID: 6273514525715778002}
+  - {fileID: 6531683845796731897}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -727,41 +728,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 2563745831790295205}
+  muzzleFlashPoint: {fileID: 6531683845796731897}
   weaponName: M4
   maxAmmo: 30
   fireRate: 8
-  reloadTime: 2
-  sprayPattern:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
+  recoilResetTime: 0.1
+  recoilResetSpeed: 3
+  reloadTime: 2.5
+  maxSpread: 0.5
+  recoilPattern:
+  - {x: 0, y: 0.3, z: 0}
+  - {x: 0, y: 0.3, z: 0}
+  - {x: 0, y: 0.35, z: 0}
+  - {x: 0, y: 0.35, z: 0}
+  - {x: 0, y: 0.35, z: 0}
+  - {x: 0, y: 0.4, z: 0}
+  - {x: 0, y: 0.4, z: 0}
+  - {x: 0, y: 0.4, z: 0}
+  - {x: 0, y: 0.45, z: 0}
+  - {x: 0, y: 0.45, z: 0}
+  - {x: 0, y: 0.45, z: 0}
+  - {x: 0, y: 0.45, z: 0}
+  - {x: 0, y: 0.5, z: 0}
+  - {x: 0, y: 0.5, z: 0}
+  - {x: 0, y: 0.5, z: 0}
+  - {x: 0.2, y: 0, z: 0}
+  - {x: 0.3, y: 0, z: 0}
+  - {x: 0.4, y: 0, z: 0}
+  - {x: 0.3, y: 0, z: 0}
+  - {x: 0.2, y: 0, z: 0}
+  - {x: -0.5, y: 0, z: 0}
+  - {x: -0.4, y: 0, z: 0}
+  - {x: -0.2, y: 0, z: 0}
+  - {x: -0.4, y: 0, z: 0}
+  - {x: -0.3, y: 0, z: 0}
+  - {x: -0.1, y: 0, z: 0}
+  - {x: -0.2, y: 0, z: 0}
+  - {x: 0.5, y: 0, z: 0}
+  - {x: -0.1, y: 0, z: 0}
+  - {x: -0.3, y: 0, z: 0}
 --- !u!1 &7284574346482777173
 GameObject:
   m_ObjectHideFlags: 0
@@ -1147,6 +1152,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6320300690958116219}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7864987771086929333
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6531683845796731897}
+  m_Layer: 0
+  m_Name: MuzzleFlashPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6531683845796731897
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7864987771086929333}
+  m_LocalRotation: {x: -0, y: -0.70710677, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.0872, z: 0.5919}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6320300690958116219}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8099389091101557637
 GameObject:

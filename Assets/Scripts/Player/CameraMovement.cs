@@ -9,6 +9,8 @@ public class CameraMovement : MonoBehaviour
     private float xRotation;
     private float yRotation;
 
+    [HideInInspector] public Vector3 currentRecoil;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -31,8 +33,13 @@ public class CameraMovement : MonoBehaviour
         //Clamp xRotation so the player can't go upside down
         xRotation = Mathf.Clamp(xRotation, -clampRotation, clampRotation);
 
-        //Set the rotation of the camera and the orientation object of the player
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        //Set the rotation of the camera (including the recoil), and the orientation object of the player
+        transform.rotation = Quaternion.Euler(xRotation - currentRecoil.y, yRotation + currentRecoil.x, 0);
         playerOrientation.rotation = Quaternion.Euler(0, yRotation, 0);
+    }
+
+    public void AddRecoil(Vector3 recoil)
+    {
+        currentRecoil = recoil;
     }
 }
