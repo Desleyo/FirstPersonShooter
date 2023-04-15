@@ -10,12 +10,16 @@ public class Weapon : MonoBehaviour
     public string weaponName;
     public int maxAmmo;
     public float fireRate;
-
-    [Header("Recoil & Spread")]
-    public float recoilResetTime; //The time it will take to reset the recoil pattern
-    public float recoilResetSpeed; //The speed at which the camera recoil will decline
     public float reloadTime;
+
+    [Header("Spray & Spread")]
+    public float sprayPatternCorrection;
     public float maxSpread;
+
+    [Header("Recoil")]
+    public float camRecoilResetSpeed; //The speed at which the camera recoil will decay
+    public float indexRecoilResetSpeed;
+    public float maxRecoilY;
 
     [Header("Recoil pattern")]
     public Vector3[] recoilPattern;

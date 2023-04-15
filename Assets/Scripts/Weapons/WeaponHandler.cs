@@ -18,6 +18,7 @@ public class WeaponHandler : MonoBehaviour
 
     private int currentAmmo;
     private int currentRecoilIndex;
+    private float currentRecoilDecay;
     private float lastTimeShot;
     private float recoilResetTimeLeft;
 
@@ -52,8 +53,7 @@ public class WeaponHandler : MonoBehaviour
         if (!wantsToShoot || currentAmmo == 0 || isReloading)
         {
             isShooting = false;
-
-            HandleRecoil();
+            DecayRecoil();
 
             return;
         }
@@ -65,11 +65,15 @@ public class WeaponHandler : MonoBehaviour
         isShooting = true;
         weapon.animator.SetTrigger("Shoot");
 
-        recoilResetTimeLeft = weapon.recoilResetTime;
-
         //Handle the recoil of the gun
+        currentRecoilIndex = Mathf.RoundToInt(currentRecoilDecay);
         Vector3 recoil = weapon.recoilPattern[currentRecoilIndex];
-        cameraMovement.AddRecoil(cameraMovement.currentRecoil + recoil);
+        Vector3 newRecoil = cameraMovement.currentRecoil + recoil;
+        newRecoil.y = Mathf.Clamp(newRecoil.y, 0, weapon.maxRecoilY);
+        cameraMovement.AddRecoil(newRecoil);
+
+        //Create a spray pattern Vector3 from the recoil pattern, but keep first bullet accurary in mind
+        Vector3 spray = currentRecoilIndex == 0 ? new Vector3() : recoil / weapon.sprayPatternCorrection;
 
         //Create a randomSpread Vector3 with random values for X and Y
         float randomSpreadX = Random.Range(-weapon.maxSpread, weapon.maxSpread);
@@ -78,7 +82,7 @@ public class WeaponHandler : MonoBehaviour
 
         //Setup the raycast
         Vector3 origin = playerCamera.transform.position;
-        Vector3 direction = playerCamera.transform.TransformDirection(Vector3.forward + randomSpread);
+        Vector3 direction = playerCamera.transform.TransformDirection(Vector3.forward + spray + randomSpread);
         if (Physics.Raycast(origin, direction, out RaycastHit hit))
         {
             //Do something on hit
@@ -93,25 +97,23 @@ public class WeaponHandler : MonoBehaviour
 
         currentAmmo--;
         currentRecoilIndex++;
+        currentRecoilDecay = currentRecoilIndex;
         lastTimeShot = Time.time;
         ammoText.text = $"{currentAmmo} | {weapon.maxAmmo}";
     }
 
-    private void HandleRecoil()
+    private void DecayRecoil()
     {
-        if (recoilResetTimeLeft > 0)
+        if(currentRecoilDecay != 0)
         {
-            recoilResetTimeLeft -= Time.deltaTime;
-        }
-        else if (currentRecoilIndex != 0)
-        {
-            currentRecoilIndex = 0;
+            currentRecoilDecay -= weapon.indexRecoilResetSpeed * Time.deltaTime;
+            currentRecoilDecay = Mathf.Clamp(currentRecoilDecay, 0, weapon.maxAmmo);
         }
 
         if (cameraMovement.currentRecoil != Vector3.zero)
         {
             //Slowly reset the recoil of the gun
-            Vector3 resetRecoil = Vector3.Lerp(cameraMovement.currentRecoil, Vector3.zero, weapon.recoilResetSpeed * Time.deltaTime);
+            Vector3 resetRecoil = Vector3.Lerp(cameraMovement.currentRecoil, Vector3.zero, weapon.camRecoilResetSpeed * Time.deltaTime);
             cameraMovement.AddRecoil(resetRecoil);
         }
     }
