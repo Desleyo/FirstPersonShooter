@@ -437,6 +437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 1275869948}
+  playerMovement: {fileID: 99054199}
   cameraMovement: {fileID: 1275869952}
   weapon: {fileID: 623302078}
   muzzleFlashPrefab: {fileID: 769231850312162702, guid: a1a2e7349e9555e40b9b772793b2586c, type: 3}
@@ -715,10 +716,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1275869949}
     m_Modifications:
-    - target: {fileID: 1306227801, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
-      propertyPath: indexRecoilResetSpeed
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 6320300690958116219, guid: a86c730b26bb61e4faef1231788b342f, type: 3}
       propertyPath: m_RootOrder
       value: 1

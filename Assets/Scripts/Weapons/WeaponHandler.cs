@@ -5,6 +5,7 @@ using TMPro;
 public class WeaponHandler : MonoBehaviour
 {
     [SerializeField] private GameObject playerCamera;
+    [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private Weapon weapon;
 
@@ -75,10 +76,18 @@ public class WeaponHandler : MonoBehaviour
         //Create a spray pattern Vector3 from the recoil pattern, but keep first bullet accurary in mind
         Vector3 spray = currentRecoilIndex == 0 ? new Vector3() : recoil / weapon.sprayPatternCorrection;
 
-        //Create a randomSpread Vector3 with random values for X and Y
-        float randomSpreadX = Random.Range(-weapon.maxSpread, weapon.maxSpread);
-        float randomSpreadY = Random.Range(-weapon.maxSpread, weapon.maxSpread);
-        Vector3 randomSpread = new Vector3(randomSpreadX, randomSpreadY, 0);
+        Vector3 randomSpread = new Vector3();
+        if(currentRecoilIndex != 0)
+        {
+            //Create a randomSpread Vector3 with random values for X and Y
+            float randomSpreadX = Random.Range(-weapon.maxSpread, weapon.maxSpread);
+            float randomSpreadY = Random.Range(-weapon.maxSpread, weapon.maxSpread);
+            randomSpread = new Vector3(randomSpreadX, randomSpreadY, 0);
+        }
+
+        //multiply the randomSpread by the additional movement spread from the player movement
+        float spreadMultiplier = playerMovement.GetSpreadMultiplier();
+        randomSpread = new Vector3(randomSpread.x * spreadMultiplier, randomSpread.y * spreadMultiplier, randomSpread.z);
 
         //Setup the raycast
         Vector3 origin = playerCamera.transform.position;
@@ -104,7 +113,7 @@ public class WeaponHandler : MonoBehaviour
 
     private void DecayRecoil()
     {
-        if(currentRecoilDecay != 0)
+        if(currentRecoilDecay != 0 && Time.time - lastTimeShot > 1 / weapon.fireRate)
         {
             currentRecoilDecay -= weapon.indexRecoilResetSpeed * Time.deltaTime;
             currentRecoilDecay = Mathf.Clamp(currentRecoilDecay, 0, weapon.maxAmmo);

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3517635261207902796}
   - component: {fileID: 3517635261207902799}
   - component: {fileID: 3517635261207902643}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Body
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 3517635262847656836}
   - component: {fileID: 3517635262847656839}
   - component: {fileID: 3517635262847656838}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Head
   m_TagString: Head
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 1977624456586628523}
   - component: {fileID: 6143794651773357205}
   - component: {fileID: 3168031412150820552}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: HealthCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 3768792233360374280}
   - component: {fileID: 4658955669766932389}
   - component: {fileID: 564706785824879964}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -454,7 +454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1336476445098696509}
   - component: {fileID: 1767291453349873904}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: HealthTextRotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}

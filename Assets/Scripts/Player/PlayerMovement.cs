@@ -145,4 +145,21 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
+
+    //Call this function to get the spreadmultiplier based on the player's velocity and movement state
+    public float GetSpreadMultiplier()
+    {
+        float spreadMultiplier;
+
+        if (rb.velocity.magnitude == 0)
+        {
+            spreadMultiplier = Input.GetButton("Crouch") ? .5f : 1f;
+        }
+        else
+        {
+            spreadMultiplier = rb.velocity.magnitude;
+        }
+
+        return spreadMultiplier;
+    }
 }
