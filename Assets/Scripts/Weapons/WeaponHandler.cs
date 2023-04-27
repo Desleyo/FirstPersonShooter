@@ -76,18 +76,11 @@ public class WeaponHandler : MonoBehaviour
         //Create a spray pattern Vector3 from the recoil pattern, but keep first bullet accurary in mind
         Vector3 spray = currentRecoilIndex == 0 ? new Vector3() : recoil / weapon.sprayPatternCorrection;
 
-        Vector3 randomSpread = new Vector3();
-        if(currentRecoilIndex != 0)
-        {
-            //Create a randomSpread Vector3 with random values for X and Y
-            float randomSpreadX = Random.Range(-weapon.maxSpread, weapon.maxSpread);
-            float randomSpreadY = Random.Range(-weapon.maxSpread, weapon.maxSpread);
-            randomSpread = new Vector3(randomSpreadX, randomSpreadY, 0);
-        }
-
-        //multiply the randomSpread by the additional movement spread from the player movement
+        //Create a randomSpread Vector3 with random values for X and Y
+        float randomSpreadX = Random.Range(-weapon.maxSpread, weapon.maxSpread);
+        float randomSpreadY = Random.Range(-weapon.maxSpread, weapon.maxSpread);
         float spreadMultiplier = playerMovement.GetSpreadMultiplier();
-        randomSpread = new Vector3(randomSpread.x * spreadMultiplier, randomSpread.y * spreadMultiplier, randomSpread.z);
+        Vector3 randomSpread = new Vector3(randomSpreadX * spreadMultiplier, randomSpreadY * spreadMultiplier, 0);
 
         //Setup the raycast
         Vector3 origin = playerCamera.transform.position;

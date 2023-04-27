@@ -153,6 +153,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (rb.velocity.magnitude == 0)
         {
+            //If we're crouching we should divide the spread by 2, otherwise leave it at 1
             spreadMultiplier = Input.GetButton("Crouch") ? .5f : 1f;
         }
         else
