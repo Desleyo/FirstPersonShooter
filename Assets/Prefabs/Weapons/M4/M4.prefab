@@ -734,7 +734,7 @@ MonoBehaviour:
   fireRate: 8
   reloadTime: 2.5
   sprayPatternCorrection: 5
-  maxSpread: 0.01
+  maxSpread: 0.0075
   camRecoilResetSpeed: 3
   indexRecoilResetSpeed: 30
   maxRecoilY: 6
