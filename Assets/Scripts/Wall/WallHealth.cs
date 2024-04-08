@@ -21,7 +21,7 @@ public class WallHealth : MonoBehaviour, IDamageable
     }
 
     //Call this function to deal damage
-    public void TakeDamage(int damage, bool headShot = false, bool wallBanged = false)
+    public void TakeDamage(int damage, bool headshot = false, bool wallbanged = false)
     {
         health -= damage;
 
@@ -53,8 +53,7 @@ public class WallHealth : MonoBehaviour, IDamageable
         StartCoroutine(RebuildWall(newBrokenWall, rebuildTime));
     }
 
-    //Call this function to destroy the broken wall
-    //And enable the normal wall after a given amount of time
+    //Call this function to destroy the broken wall and enable the normal wall after a given amount of time
     private IEnumerator RebuildWall(GameObject newBrokenWall, float time)
     {
         yield return new WaitForSeconds(time);

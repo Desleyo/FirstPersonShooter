@@ -2,14 +2,14 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-public class KillFeed : MonoBehaviour
+public class Killfeed : MonoBehaviour
 {
-    public static KillFeed instance;
+    public static Killfeed instance;
 
-    [SerializeField] private GameObject killFeedPrefab;
+    [SerializeField] private GameObject killfeedPrefab;
     [SerializeField] private string killSymbol;
-    [SerializeField] private string headShotSymbol;
-    [SerializeField] private string wallBangSymbol;
+    [SerializeField] private string headshotSymbol;
+    [SerializeField] private string wallbangSymbol;
 
     [Space]
     [SerializeField] private float waitBeforeFade;
@@ -21,24 +21,25 @@ public class KillFeed : MonoBehaviour
     }
 
     //Call this function to update the killFeed when a kill is made
-    public void UpdateKillFeed(string enemyName, bool gotHeadShot, bool gotWallBanged)
+    public void UpdateKillFeed(string enemyName, bool gotHeadshot, bool gotWallbanged)
     {
         //Setup kill symbols
         string symbols = killSymbol;
-        if (gotWallBanged)
+        if (gotWallbanged)
         {
-            symbols += wallBangSymbol;
+            symbols += wallbangSymbol;
         }
-        if (gotHeadShot)
+
+        if (gotHeadshot)
         {
-            symbols += headShotSymbol;
+            symbols += headshotSymbol;
         }
 
         //Setup enemy name
         string dummyName = $"<color=red> {enemyName} </color>";
 
         //Create a killFeed message
-        GameObject killFeedMessage = Instantiate(killFeedPrefab, transform);
+        GameObject killFeedMessage = Instantiate(killfeedPrefab, transform);
         TextMeshProUGUI killText = killFeedMessage.GetComponentInChildren<TextMeshProUGUI>();
         killText.text = $"<color=blue> Player </color> {symbols} {dummyName}";
 

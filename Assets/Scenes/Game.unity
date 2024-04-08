@@ -410,7 +410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6b868704ca8004f8c1d4db5cb59f0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalSpeed: 7
+  runningSpeed: 7
   speedMultiplier: 10
   groundDrag: 5
   walkSpeed: 3.75
@@ -4155,10 +4155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41352d1e29274fb4a8ae685485b78420, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  killFeedPrefab: {fileID: 1114691598339942198, guid: 18e7790e6018a4245a299ccbb3776bc6, type: 3}
+  killfeedPrefab: {fileID: 0}
   killSymbol: '>'
-  headShotSymbol: ' X'
-  wallBangSymbol: ' /'
+  headshotSymbol: 
+  wallbangSymbol: 
   waitBeforeFade: 3
   fadeOutSpeed: 2
 --- !u!1 &2069707892

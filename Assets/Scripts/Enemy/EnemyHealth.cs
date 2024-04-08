@@ -16,8 +16,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         healthText.text = health.ToString();
     }
 
-    //Call this function to deal damage
-    public void TakeDamage(int damage, bool headShot = false, bool wallBanged = false)
+    public void TakeDamage(int damage, bool headshot = false, bool wallbanged = false)
     {
         health -= damage;
 
@@ -27,7 +26,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         {
             hasDied = true;
 
-            KillFeed.instance.UpdateKillFeed(enemyName, headShot, wallBanged);
+            Killfeed.instance.UpdateKillFeed(enemyName, headshot, wallbanged);
 
             EnemySpawner.instance.SpawnEnemy(transform, enemyName);
 

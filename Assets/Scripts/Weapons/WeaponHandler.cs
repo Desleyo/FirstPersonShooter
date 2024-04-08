@@ -21,7 +21,6 @@ public class WeaponHandler : MonoBehaviour
     private int currentRecoilIndex;
     private float currentRecoilDecay;
     private float lastTimeShot;
-    private float recoilResetTimeLeft;
 
     private bool wantsToShoot;
     private bool wantsToReload;
@@ -50,7 +49,7 @@ public class WeaponHandler : MonoBehaviour
 
     private void Shoot()
     {
-        //We'll return is we are not trying to shoot, don't have enough ammo, or are reloading
+        //We'll return if we are not trying to shoot, don't have enough ammo, or are reloading
         if (!wantsToShoot || currentAmmo == 0 || isReloading)
         {
             isShooting = false;

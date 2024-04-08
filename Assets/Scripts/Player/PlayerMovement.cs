@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float normalSpeed;
+    [SerializeField] private float runningSpeed;
     [SerializeField] private float speedMultiplier;
     [SerializeField] private float groundDrag;
     private float moveSpeed;
@@ -80,8 +80,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isGrounded)
         {
-            moveState = MovementState.normal;
-            moveSpeed = normalSpeed;
+            moveState = MovementState.running;
+            moveSpeed = runningSpeed;
         }
         else
         {

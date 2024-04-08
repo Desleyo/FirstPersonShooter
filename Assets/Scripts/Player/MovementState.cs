@@ -1,6 +1,6 @@
 public enum MovementState
 {
-    normal,
+    running,
     walking,
     crouching,
     jumping
