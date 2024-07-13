@@ -1,6 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletHole : MonoBehaviour
+public class DestroyDecal : MonoBehaviour
 {
     [SerializeField] private float destroyTime;
 

@@ -125,6 +125,8 @@ public class WeaponHandler : MonoBehaviour
 
         //Create a bullet hole that has a potential moving transform as their parent
         CreateBulletHole(hit, hit.transform);
+
+        //TODO: Check for potential wallbang and what to do after
     }
 
     private void CreateBulletHole(RaycastHit hit, Transform parent) {

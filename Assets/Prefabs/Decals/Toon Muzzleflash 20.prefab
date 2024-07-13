@@ -348,7 +348,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 769231850311926190}
-  - component: {fileID: -8270438192040954625}
+  - component: {fileID: -8912830897424353083}
   m_Layer: 0
   m_Name: Toon Muzzleflash 20
   m_TagString: Untagged
@@ -374,7 +374,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-8270438192040954625
+--- !u!114 &-8912830897424353083
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -383,7 +383,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 769231850312162702}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff6fad57bacc6b04895eaf65a95c093f, type: 3}
+  m_Script: {fileID: 11500000, guid: f86529906f3c0e84b878e88ec45dc691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 0.1

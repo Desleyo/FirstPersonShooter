@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         GetMoveInput();
-        MoveStateHandler();
+        MoveSpeedHandler();
 
         CheckIfGrounded();
         LimitSpeed();
@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         vertical = Input.GetAxisRaw("Vertical");
     }
 
-    private void MoveStateHandler()
+    private void MoveSpeedHandler()
     {
         if (Input.GetButton("Crouch") && isGrounded)
         {
@@ -138,12 +138,17 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
-    //Call this function to get the spreadmultiplier based on the player's velocity and movement state
+    //Call this function to get the spreadmultiplier based on the player's velocity
     public float GetSpreadMultiplier()
     {
         float spreadMultiplier;
 
-        if (rb.velocity.magnitude == 0)
+        if (!isGrounded)
+        {
+            //In-air spread multiplier
+            spreadMultiplier = 10f;
+        }
+        else if (rb.velocity.magnitude == 0)
         {
             //If we're crouching we should divide the spread by 2, otherwise leave it at 1
             spreadMultiplier = Input.GetButton("Crouch") ? .5f : 1f;
