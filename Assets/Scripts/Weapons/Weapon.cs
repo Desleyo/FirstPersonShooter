@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
 
     [Header("General")]
     public string weaponName;
+    public int damage;
     public int maxAmmo;
     public float fireRate;
     public float reloadTime;

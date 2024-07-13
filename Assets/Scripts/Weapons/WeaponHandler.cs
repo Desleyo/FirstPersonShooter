@@ -4,6 +4,7 @@ using TMPro;
 
 public class WeaponHandler : MonoBehaviour
 {
+    [Header("General")]
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private CameraMovement cameraMovement;
@@ -16,6 +17,9 @@ public class WeaponHandler : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI ammoText;
+
+    [Header("Multipliers")]
+    [SerializeField] private float headshotMultiplier;
 
     private int currentAmmo;
     private int currentRecoilIndex;
@@ -86,11 +90,7 @@ public class WeaponHandler : MonoBehaviour
         Vector3 direction = playerCamera.transform.TransformDirection(Vector3.forward + spray + randomSpread);
         if (Physics.Raycast(origin, direction, out RaycastHit hit))
         {
-            //Do something on hit
-
-            //Create bullet hole
-            GameObject decal = Instantiate(decalPrefab, hit.point, Quaternion.identity, decalParent);
-            decal.transform.up = hit.normal;
+            TryDealDamage(hit);
         }
 
         //Create muzzle flash
@@ -102,6 +102,36 @@ public class WeaponHandler : MonoBehaviour
         lastTimeShot = Time.time;
         ammoText.text = $"{currentAmmo} | {weapon.maxAmmo}";
     }
+
+    private void TryDealDamage(RaycastHit hit)
+    {
+        //If the hit object does not contain an IDamagable interface, we'll only create a bullet hole
+        if (hit.transform.GetComponentInParent<IDamageable>() == null)
+        {
+            //Create a bullet hole that has a global transform as their parent
+            CreateBulletHole(hit, decalParent);
+            return;
+        }
+
+        IDamageable damageable = hit.transform.GetComponentInParent<IDamageable>();
+
+        string tag = hit.transform.tag;
+        bool isHeadshot = tag == "Head";
+
+        //Determine the damage according to the "isHeadshot" boolean
+        int damage = isHeadshot ? Mathf.RoundToInt(weapon.damage * headshotMultiplier) : weapon.damage;
+
+        damageable.TakeDamage(damage, isHeadshot, false);
+
+        //Create a bullet hole that has a potential moving transform as their parent
+        CreateBulletHole(hit, hit.transform);
+    }
+
+    private void CreateBulletHole(RaycastHit hit, Transform parent) {
+        GameObject decal = Instantiate(decalPrefab, hit.point, Quaternion.identity, parent);
+        decal.transform.up = hit.normal;
+    }
+
 
     private void DecayRecoil()
     {

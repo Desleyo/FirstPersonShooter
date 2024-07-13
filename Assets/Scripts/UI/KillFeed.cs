@@ -25,14 +25,15 @@ public class Killfeed : MonoBehaviour
     {
         //Setup kill symbols
         string symbols = killSymbol;
+
         if (gotWallbanged)
         {
-            symbols += wallbangSymbol;
+            symbols += " " + wallbangSymbol;
         }
 
         if (gotHeadshot)
         {
-            symbols += headshotSymbol;
+            symbols += " " + headshotSymbol;
         }
 
         //Setup enemy name

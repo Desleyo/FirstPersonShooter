@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5387092019490067969}
   - component: {fileID: 5070049788916423717}
   - component: {fileID: 7614231020172575215}
-  - component: {fileID: -4222983787704699445}
+  - component: {fileID: 3126999685174464588}
   m_Layer: 0
   m_Name: BulletHit
   m_TagString: Untagged
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-4222983787704699445
+--- !u!114 &3126999685174464588
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8285733933855847673}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3766c075f7d39a84cad871cf799429aa, type: 3}
+  m_Script: {fileID: 11500000, guid: 4fae56db863a1e1428df82640702530c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 10

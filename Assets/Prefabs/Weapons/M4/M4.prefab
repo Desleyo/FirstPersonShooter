@@ -730,6 +730,7 @@ MonoBehaviour:
   animator: {fileID: 2563745831790295205}
   muzzleFlashPoint: {fileID: 6531683845796731897}
   weaponName: M4
+  damage: 27
   maxAmmo: 30
   fireRate: 8
   reloadTime: 2.5

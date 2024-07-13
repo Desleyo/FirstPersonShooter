@@ -444,6 +444,7 @@ MonoBehaviour:
   decalPrefab: {fileID: 8285733933855847673, guid: bfd6dd9d85fa3e74dafb91baec28f161, type: 3}
   decalParent: {fileID: 1660693812}
   ammoText: {fileID: 174939207}
+  headshotMultiplier: 3.5
 --- !u!1001 &117912525
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4155,10 +4156,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41352d1e29274fb4a8ae685485b78420, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  killfeedPrefab: {fileID: 0}
+  killfeedPrefab: {fileID: 1114691598339942198, guid: 18e7790e6018a4245a299ccbb3776bc6, type: 3}
   killSymbol: '>'
-  headshotSymbol: 
-  wallbangSymbol: 
+  headshotSymbol: X
+  wallbangSymbol: /
   waitBeforeFade: 3
   fadeOutSpeed: 2
 --- !u!1 &2069707892

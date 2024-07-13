@@ -15,6 +15,8 @@ public class WallHealth : MonoBehaviour, IDamageable
 
     [HideInInspector] public int health;
 
+    private bool isBroken = false;
+
     private void Start()
     {
         health = maxHealth;
@@ -23,11 +25,16 @@ public class WallHealth : MonoBehaviour, IDamageable
     //Call this function to deal damage
     public void TakeDamage(int damage, bool headshot = false, bool wallbanged = false)
     {
+        //We don't want to take damage when the wall is already broken
+        if(isBroken) 
+            return;
+
         health -= damage;
 
         if (health <= 0)
         {
             Invoke(nameof(DestroyWall), .01f);
+            isBroken = true;
         }
     }
 
@@ -63,5 +70,6 @@ public class WallHealth : MonoBehaviour, IDamageable
         wall.SetActive(true);
 
         health = maxHealth;
+        isBroken = false;
     }
 }

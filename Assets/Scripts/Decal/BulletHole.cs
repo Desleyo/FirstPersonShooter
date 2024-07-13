@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DestroyDecal : MonoBehaviour
+public class BulletHole : MonoBehaviour
 {
     [SerializeField] private float destroyTime;
 

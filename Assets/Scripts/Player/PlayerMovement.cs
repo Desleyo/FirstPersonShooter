@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speedMultiplier;
     [SerializeField] private float groundDrag;
     private float moveSpeed;
-    private MovementState moveState;
 
     [Header("Walk")]
     [SerializeField] private float walkSpeed;
@@ -70,22 +69,15 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetButton("Crouch") && isGrounded)
         {
-            moveState = MovementState.crouching;
             moveSpeed = crouchSpeed;
         }
         else if (Input.GetButton("Walk") && isGrounded)
         {
-            moveState = MovementState.walking;
             moveSpeed = walkSpeed;
         }
         else if (isGrounded)
         {
-            moveState = MovementState.running;
             moveSpeed = runningSpeed;
-        }
-        else
-        {
-            moveState = MovementState.jumping;
         }
     }
 
